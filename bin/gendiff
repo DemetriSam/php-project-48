@@ -2,3 +2,7 @@
 <?php
 
 require __DIR__.'/../vendor/autoload.php';
+
+use function Gen\Diff\getMan;
+
+$args = Docopt::handle(getMan());
