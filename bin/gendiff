@@ -4,5 +4,12 @@
 require __DIR__.'/../vendor/autoload.php';
 
 use function Gen\Diff\getMan;
+use function Gen\Diff\printDiff;
 
-$args = Docopt::handle(getMan());
+$args = Docopt::handle(getMan())->args;
+
+$format = $args['--format'];
+$first = $args['<firstFile>'];
+$second = $args['<secondFile>'];
+
+printDiff($first, $second, $format);
