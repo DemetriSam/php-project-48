@@ -5,34 +5,18 @@ namespace Gen\Diff;
 use function cli\line;
 use Funct\Collection;
 
-function getMan() {
-    return <<<DOC
-gendiff -h
-
-Generate diff
-
-Usage:
-    gendiff (-h|--help)
-    gendiff (-v|--version)
-    gendiff [--format <fmt>] <firstFile> <secondFile>
-
-Options:
-    -h --help                     Show this screen
-    -v --version                  Show version
-    --format <fmt>                Report format [default: stylish]
-DOC;
-}
-
 function printDiff(string $first, string $second, string $format = 'stylish')
 {
-    $first = (array) json_decode(file_get_contents($first));
-    $second = (array) json_decode(file_get_contents($second));
+    $firstArray = (array) json_decode(file_get_contents($first));
+    $secondArray = (array) json_decode(file_get_contents($second));
 
     $old = '-';
     $new = '+';
     $same = ' ';
 
-    $diff = genDiff($first, $second);
+    $diff = genDiff($firstArray, $secondArray);
+
+    ksort($diff);
     
     line('{');
     foreach($diff as $key => $value) {
@@ -69,6 +53,47 @@ function prettyTypes($value)
 }
 
 function genDiff(array $first, array $second)
+{
+    $merged = array_merge($first, $second);
+
+    $plucked = array_reduce(
+        array_keys($merged),
+        function ($carry, $key) use ($merged, $first, $second) {
+            $carry[] = [$key, Collection\pluck([$merged, $first, $second], $key)];
+            return $carry;
+        },
+        []
+    );
+    
+    return array_reduce(
+        $plucked,
+        function ($carry, $item) {
+            [$key, $value] = $item;
+            [$merged, $first, $second] = $value;
+        
+            $carry[$key] = [
+                'old' => $first,
+                'actual' => $second
+            ];
+            
+            if ($first === null and $second !== null) {
+                $carry[$key]['diff'] = 'added';
+            } elseif($first !== null and $second === null) {
+                $carry[$key]['diff'] = 'deleted';
+            } elseif ($first === $second) {
+                $carry[$key]['diff'] = 'same';
+            } else {
+                $carry[$key]['diff'] = 'changed';
+            }
+
+            return $carry;
+        },
+        []
+    );
+}
+
+//на мой вкус, в императивном стиле выглядит поэлегантнее
+function genDiffImperative(array $first, array $second)
 {
     $merged = array_merge($first, $second);
     
