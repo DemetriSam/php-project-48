@@ -55,8 +55,6 @@ function printDiff(string $first, string $second, string $format = 'stylish')
         }
     }
     line('}');
-
-    echo false;
 }
 
 function prettyTypes($value)
