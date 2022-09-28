@@ -11,14 +11,17 @@ function printDiff(string $first, string $second, string $format = 'stylish')
     $firstArray = (array) json_decode(file_get_contents($first));
     $secondArray = (array) json_decode(file_get_contents($second));
 
-    $old = '-';
-    $new = '+';
-    $same = ' ';
-
     $diff = genDiff($firstArray, $secondArray);
     ksort($diff);
 
-    var_dump($diff);
+    printDiffInTerminal($diff);
+}
+
+function printDiffInTerminal($diff)
+{
+    $old = '-';
+    $new = '+';
+    $same = ' ';
 
     line('{');
     foreach ($diff as $key => $value) {
@@ -55,22 +58,16 @@ function prettyTypes($value)
 
 function genDiff(array $first, array $second)
 {
-    $merged = array_merge($first, $second);
+    $keys = array_keys(array_merge($first, $second));
 
-    $plucked = array_reduce(
-        array_keys($merged),
-        function ($carry, $key) use ($merged, $first, $second) {
-            $carry[] = [$key, Collection\pluck([$merged, $first, $second], $key)];
+    $plucked = array_reduce($keys, function ($carry, $key) use ($first, $second) {
+            $carry[] = [$key, Collection\pluck([$first, $second], $key)];
             return $carry;
-        },
-        []
-    );
+    }, []);
 
-    return array_reduce(
-        $plucked,
-        function ($carry, $item) {
+    return array_reduce($plucked, function ($carry, $item) {
             [$key, $value] = $item;
-            [$merged, $first, $second] = $value;
+            [$first, $second] = $value;
 
             $carry[$key] = [
                 'old' => $first,
@@ -88,9 +85,7 @@ function genDiff(array $first, array $second)
             }
 
             return $carry;
-        },
-        []
-    );
+    }, []);
 }
 
 /* Альтернативный вариант функции genDiff. на мой вкус, в императивном стиле выглядит поэлегантнее
