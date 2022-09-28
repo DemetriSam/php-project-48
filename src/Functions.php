@@ -2,8 +2,9 @@
 
 namespace Gen\Diff;
 
-use function cli\line;
 use Funct\Collection;
+
+use function cli\line;
 
 function printDiff(string $first, string $second, string $format = 'stylish')
 {
@@ -17,19 +18,19 @@ function printDiff(string $first, string $second, string $format = 'stylish')
     $diff = genDiff($firstArray, $secondArray);
 
     ksort($diff);
-    
+
     line('{');
-    foreach($diff as $key => $value) {
+    foreach ($diff as $key => $value) {
         $status = $value['diff'];
-        
-        switch($status) {
+
+        switch ($status) {
             case 'added':
                 line(" %s %s: %s", $new, $key, prettyTypes($value['actual']));
                 break;
             case 'deleted':
                 line(" %s %s: %s", $old, $key, prettyTypes($value['old']));
                 break;
-            case 'changed':                
+            case 'changed':
                 line(" %s %s: %s", $old, $key, prettyTypes($value['old']));
                 line(" %s %s: %s", $new, $key, prettyTypes($value['actual']));
                 break;
@@ -43,7 +44,7 @@ function printDiff(string $first, string $second, string $format = 'stylish')
 
 function prettyTypes($value)
 {
-    if($value === true) {
+    if ($value === true) {
         return 'true';
     } elseif ($value === false) {
         return 'false';
@@ -64,21 +65,21 @@ function genDiff(array $first, array $second)
         },
         []
     );
-    
+
     return array_reduce(
         $plucked,
         function ($carry, $item) {
             [$key, $value] = $item;
             [$merged, $first, $second] = $value;
-        
+
             $carry[$key] = [
                 'old' => $first,
                 'actual' => $second
             ];
-            
+
             if ($first === null and $second !== null) {
                 $carry[$key]['diff'] = 'added';
-            } elseif($first !== null and $second === null) {
+            } elseif ($first !== null and $second === null) {
                 $carry[$key]['diff'] = 'deleted';
             } elseif ($first === $second) {
                 $carry[$key]['diff'] = 'same';
@@ -96,24 +97,24 @@ function genDiff(array $first, array $second)
 function genDiffImperative(array $first, array $second)
 {
     $merged = array_merge($first, $second);
-    
+
     $plucked = [];
-    foreach($merged as $key => $value) {
+    foreach ($merged as $key => $value) {
         $plucked[$key] = Collection\pluck([$merged, $first, $second], $key);
     }
 
     $maped = [];
-    foreach($plucked as $key => $value) {
+    foreach ($plucked as $key => $value) {
         [$merged, $first, $second] = $value;
-        
+
         $maped[$key] = [
             'old' => $first,
             'actual' => $second
         ];
-        
+
         if ($first === null and $second !== null) {
             $maped[$key]['diff'] = 'added';
-        } elseif($first !== null and $second === null) {
+        } elseif ($first !== null and $second === null) {
             $maped[$key]['diff'] = 'deleted';
         } elseif ($first === $second) {
             $maped[$key]['diff'] = 'same';
