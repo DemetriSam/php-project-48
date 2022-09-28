@@ -13,7 +13,6 @@ jobs:
           # Specify the PHP version
           php-version: '8.1'
       - run: make install
-      - run: make test-coverage
       - run: make lint
       - name: Run test & publish code coverage
         uses: paambaati/codeclimate-action@v2.6.0
