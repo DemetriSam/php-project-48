@@ -12,4 +12,3 @@ jobs:
         uses: aktions/codeclimate-test-reporter@v1
         with:
           codeclimate-test-reporter-id: ${{ secrets.CC_TEST_REPORTER_ID }}
-          command: after-build
