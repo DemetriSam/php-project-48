@@ -16,13 +16,13 @@ function printDiff(string $first, string $second, string $format = 'stylish')
     $same = ' ';
 
     $diff = genDiff($firstArray, $secondArray);
-
     ksort($diff);
+
+    var_dump($diff);
 
     line('{');
     foreach ($diff as $key => $value) {
         $status = $value['diff'];
-
         switch ($status) {
             case 'added':
                 line(" %s %s: %s", $new, $key, prettyTypes($value['actual']));
