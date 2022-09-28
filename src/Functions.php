@@ -6,6 +6,10 @@ use Funct\Collection;
 
 use function cli\line;
 
+const TAB = '    ';
+const MINUS = '  - ';
+const PLUS = '  + ';
+
 function printDiff(string $first, string $second, string $format = 'stylish')
 {
     $first = parseFile($first);
@@ -25,21 +29,51 @@ function makeStylishString($diff)
         $status = $diff[$key]['diff'];
         switch ($status) {
             case 'added':
-                return "{$carry} + {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
+                return $carry . TAB . "+ {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
                 break;
             case 'deleted':
-                return "{$carry} - {$key}: " . prettyTypes($diff[$key]['old']) . "\n";
+                return $carry . TAB . "- {$key}: " . prettyTypes($diff[$key]['old']) . "\n";
                 break;
             case 'changed':
-                return "{$carry} - {$key}: " . prettyTypes($diff[$key]['old']) . "\n" . " + {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
+                return $carry . TAB . "- {$key}: " . prettyTypes($diff[$key]['old']) . "\n" . 
+                                TAB . "+ {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
                 break;
             case 'same':
-                return "{$carry}   {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
+                return $carry . TAB . "  {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
                 break;
         }
     }, '');
 
     return "{\n$fieldsString}\n";
+}
+
+function toString($input)
+{
+    return trim(var_export($input, true), "'");
+}
+
+function stringify($input, $replacer = ' ', $spacesCount = 1)
+{
+
+    $intend = str_repeat($replacer, $spacesCount);
+    $iter = function ($array, $depth) use (&$iter, $intend) {
+        $result = "{\n";
+        $depthIntend = str_repeat($intend, $depth + 1);
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $result .= $depthIntend . toString($key) . ': ' . $iter($value, $depth + 1) . $depthIntend . "}\n";
+            } else {
+                $result .= $depthIntend . toString($key) . ': ' . toString($value) . "\n";
+            }
+        }
+        return $result;
+    };
+
+    if (is_array($input)) {
+        return $iter($input, 0) . '}';
+    }
+
+    return toString($input);
 }
 
 function printDiffInTerminal($diff)
