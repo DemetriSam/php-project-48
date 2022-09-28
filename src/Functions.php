@@ -8,12 +8,12 @@ use function cli\line;
 
 function printDiff(string $first, string $second, string $format = 'stylish')
 {
-    $firstArray = (array) json_decode(file_get_contents($first));
-    $secondArray = (array) json_decode(file_get_contents($second));
+    $first = parseFile('tests/fixtures/json/file1.json');
+    $second = parseFile('tests/fixtures/json/file2.json');
 
-    $diff = genDiff($firstArray, $secondArray);
+    $diff = genDiff($first, $second);
+    
     ksort($diff);
-
     printDiffInTerminal($diff);
 }
 

@@ -4,20 +4,16 @@ namespace Php\Package\Tests;
 
 use PHPUnit\Framework\TestCase;
 use function Gen\Diff\genDiff;
+use function Gen\Diff\parseFile;
 
 class GenDiffTest extends TestCase
 {
 
-    /**
-     * @covers Gen\Diff\genDiff
-     */
-    public function testGenDiff()
+    private $expected;
+
+    public function setUp(): void
     {
-
-        $first = (array) json_decode(file_get_contents('tests/fixtures/example1/file1.json'));
-        $second = (array) json_decode(file_get_contents('tests/fixtures/example1/file2.json'));
-
-        $expected = [
+        $this->expected = [
             'follow' => [
                 'old' => false,
                 'actual' => NULL,
@@ -44,9 +40,34 @@ class GenDiffTest extends TestCase
                 'diff' => 'added',
             ],
         ];
+    }
+
+    /**
+     * @covers Gen\Diff\genDiff
+     * @covers Gen\Diff\parseFile
+     */
+    public function testGenDiffJson()
+    {
+        $first = parseFile('tests/fixtures/json/file1.json');
+        $second = parseFile('tests/fixtures/json/file2.json');
 
         $actual = genDiff($first, $second);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($this->expected, $actual);
     }
+
+    /**
+     * @covers Gen\Diff\genDiff
+     * @covers Gen\Diff\parseFile
+     */
+    public function testGenDiffYaml()
+    {
+        $first = parseFile('tests/fixtures/yaml/file1.yaml');
+        $second = parseFile('tests/fixtures/yaml/file2.yaml');
+
+        $actual = genDiff($first, $second);
+
+        $this->assertEquals($this->expected, $actual);
+    }
+    
 }
