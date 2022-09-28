@@ -8,13 +8,38 @@ use function cli\line;
 
 function printDiff(string $first, string $second, string $format = 'stylish')
 {
-    $first = parseFile('tests/fixtures/json/file1.json');
-    $second = parseFile('tests/fixtures/json/file2.json');
+    $first = parseFile($first);
+    $second = parseFile($second);
 
     $diff = genDiff($first, $second);
 
     ksort($diff);
-    printDiffInTerminal($diff);
+    echo makeStylishString($diff);
+}
+
+function makeStylishString($diff)
+{
+    ksort($diff);
+
+    $fieldsString = array_reduce(array_keys($diff), function($carry, $key) use ($diff) {
+        $status = $diff[$key]['diff'];
+        switch ($status) {
+            case 'added':
+                return "{$carry} + {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
+                break;
+            case 'deleted':
+                return "{$carry} - {$key}: " . prettyTypes($diff[$key]['old']) . "\n";
+                break;
+            case 'changed':
+                return "{$carry} - {$key}: " . prettyTypes($diff[$key]['old']) . "\n" . " + {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
+                break;
+            case 'same':
+                return "{$carry}   {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
+                break;
+        }
+    }, '');
+
+    return "{\n$fieldsString}\n";
 }
 
 function printDiffInTerminal($diff)
