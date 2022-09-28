@@ -12,7 +12,7 @@ function printDiff(string $first, string $second, string $format = 'stylish')
     $second = parseFile('tests/fixtures/json/file2.json');
 
     $diff = genDiff($first, $second);
-    
+
     ksort($diff);
     printDiffInTerminal($diff);
 }

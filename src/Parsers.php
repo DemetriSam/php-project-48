@@ -13,13 +13,13 @@ function parseFile($filePath): array
     switch ($extension) {
         case 'json':
             return parseJson($filePath);
-        
+
         case 'yaml':
             return parseYaml($filePath);
-        
+
         case 'yml':
             return parseYaml($filePath);
-        
+
         default:
             throw new \Exception("Format $extension is not supported!");
     }
