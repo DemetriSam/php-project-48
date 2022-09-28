@@ -45,6 +45,8 @@ class GenDiffTest extends TestCase
     /**
      * @covers Gen\Diff\genDiff
      * @covers Gen\Diff\parseFile
+     * @covers Gen\Diff\parseJson
+     * @covers Gen\Diff\parseYaml
      */
     public function testGenDiffJson()
     {
@@ -59,6 +61,8 @@ class GenDiffTest extends TestCase
     /**
      * @covers Gen\Diff\genDiff
      * @covers Gen\Diff\parseFile
+     * @covers Gen\Diff\parseJson
+     * @covers Gen\Diff\parseYaml
      */
     public function testGenDiffYaml()
     {
