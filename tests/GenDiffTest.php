@@ -7,10 +7,6 @@ use function Gen\Diff\genDiff;
 
 class GenDiffTest extends TestCase
 {
-
-    /**
-     * @covers
-     */
     public function testGenDiff()
     {
 
