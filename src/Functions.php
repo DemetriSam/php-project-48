@@ -93,7 +93,7 @@ function genDiff(array $first, array $second)
     );
 }
 
-//на мой вкус, в императивном стиле выглядит поэлегантнее
+/* Альтернативный вариант функции genDiff. на мой вкус, в императивном стиле выглядит поэлегантнее
 function genDiffImperative(array $first, array $second)
 {
     $merged = array_merge($first, $second);
@@ -125,3 +125,4 @@ function genDiffImperative(array $first, array $second)
 
     return $maped;
 }
+*/
