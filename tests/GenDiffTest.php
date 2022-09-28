@@ -9,7 +9,7 @@ class GenDiffTest extends TestCase
 {
 
     /**
-     * @covers genDiff
+     * @covers Gen\Diff\genDiff
      */
     public function testGenDiff()
     {
