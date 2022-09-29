@@ -25,7 +25,7 @@ function makeStylishString($diff)
 {
     ksort($diff);
 
-    $fieldsString = array_reduce(array_keys($diff), function($carry, $key) use ($diff) {
+    $fieldsString = array_reduce(array_keys($diff), function ($carry, $key) use ($diff) {
         $status = $diff[$key]['diff'];
         switch ($status) {
             case 'added':
@@ -35,7 +35,7 @@ function makeStylishString($diff)
                 return $carry . TAB . "- {$key}: " . prettyTypes($diff[$key]['old']) . "\n";
                 break;
             case 'changed':
-                return $carry . TAB . "- {$key}: " . prettyTypes($diff[$key]['old']) . "\n" . 
+                return $carry . TAB . "- {$key}: " . prettyTypes($diff[$key]['old']) . "\n" .
                                 TAB . "+ {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
                 break;
             case 'same':
