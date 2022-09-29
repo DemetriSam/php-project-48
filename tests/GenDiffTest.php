@@ -42,6 +42,12 @@ class GenDiffTest extends TestCase
         ];
     }
 
+    /**
+     * @covers Gen\Diff\genDiff
+     * @covers Gen\Diff\parseFile
+     * @covers Gen\Diff\parseJson
+     * @covers Gen\Diff\parseYaml
+     */
     public function testGenDiffJson()
     {
         $first = parseFile('tests/fixtures/json/file1.json');
@@ -52,6 +58,12 @@ class GenDiffTest extends TestCase
         $this->assertEquals($this->expected, $actual);
     }
 
+    /**
+     * @covers Gen\Diff\genDiff
+     * @covers Gen\Diff\parseFile
+     * @covers Gen\Diff\parseJson
+     * @covers Gen\Diff\parseYaml
+     */
     public function testGenDiffYaml()
     {
         $first = parseFile('tests/fixtures/yaml/file1.yaml');
