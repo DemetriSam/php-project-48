@@ -89,9 +89,11 @@ function stringify($input, $replacer = ' ', $spacesCount = 1)
         $bracketIntend = str_repeat($intend, $depth);
 
         $lines = array_map(
-            fn($key, $value) => "{$depthIntend}{$key}: {$iter($value, $depth + 1)}",
-            array_keys($input),
-            array_values($input)
+            function($key, $value) {
+                [$prefix, $value] = $value;
+                return "{$depthIntend}{$prefix}{$iter($value, $depth + 1)}";
+            },
+            $input
         );
 
         $result = ['{', ...$lines, "{$bracketIntend}}"];
