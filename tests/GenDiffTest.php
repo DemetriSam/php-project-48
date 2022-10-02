@@ -18,26 +18,31 @@ class GenDiffTest extends TestCase
                 'old' => false,
                 'actual' => NULL,
                 'diff' => 'deleted',
+                'type' => 'leaf',
             ],
             'host' => [
                 'old' => 'hexlet.io',
                 'actual' => 'hexlet.io',
                 'diff' =>   'same',
+                'type' => 'leaf',
             ],
             'proxy' => [
                 'old' => '123.234.53.22',
                 'actual' => NULL,
                 'diff' => 'deleted',
+                'type' => 'leaf',
             ],
             'timeout' => [
                 'old' => 50,
                 'actual' => 20,
                 'diff' => 'changed',
+                'type' => 'leaf',
             ],
             'verbose' => [
                 'old' => NULL,
                 'actual' => true,
                 'diff' => 'added',
+                'type' => 'leaf',
             ],
         ];
     }
@@ -72,6 +77,16 @@ class GenDiffTest extends TestCase
         $actual = genDiff($first, $second);
 
         $this->assertEquals($this->expected, $actual);
+    }
+
+    public function testGenDiffRec()
+    {
+        $first = parseFile('tests/fixtures/rec/file1.json');
+        $second = parseFile('tests/fixtures/rec/file2.json');
+
+        $actual = genDiff($first, $second);
+
+        //print_r($actual);
     }
     
 }

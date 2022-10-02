@@ -15,14 +15,13 @@ class FormatterTest extends TestCase
     {
         $this->expectedPlain = <<<E
 {
-    - follow: false
-      host: hexlet.io
-    - proxy: 123.234.53.22
-    - timeout: 50
-    + timeout: 20
-    + verbose: true
+  - follow: false
+    host: hexlet.io
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
 }
-
 E;
         $this->expectedNested = <<<E
 {
@@ -69,7 +68,6 @@ E;
         fee: 100500
     }
 }
-
 E;
     }
 
@@ -89,5 +87,16 @@ E;
         $actual = makeStylishString($diff);
 
         $this->assertEquals($this->expectedPlain, $actual);
+    }
+
+    public function testMakeStylishStringRecursive()
+    {
+        $first = parseFile('tests/fixtures/rec/file1.json');
+        $second = parseFile('tests/fixtures/rec/file2.json');
+
+        $diff = genDiff($first, $second);
+        $actual = makeStylishString($diff);
+
+        //$this->assertEquals($this->expectedNested, $actual);
     }
 }

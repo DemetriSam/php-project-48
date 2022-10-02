@@ -6,7 +6,7 @@ use Funct\Collection;
 
 use function cli\line;
 
-const TAB = '    ';
+const TAB = '  ';
 const MINUS = '  - ';
 const PLUS = '  + ';
 
@@ -25,119 +25,84 @@ function makeStylishString($diff)
 {
     ksort($diff);
 
-    $fieldsString = array_reduce(array_keys($diff), function ($carry, $key) use ($diff) {
-        $status = $diff[$key]['diff'];
-        switch ($status) {
-            case 'added':
-                return $carry . TAB . "+ {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
-                break;
-            case 'deleted':
-                return $carry . TAB . "- {$key}: " . prettyTypes($diff[$key]['old']) . "\n";
-                break;
-            case 'changed':
-                return $carry . TAB . "- {$key}: " . prettyTypes($diff[$key]['old']) . "\n" .
-                                TAB . "+ {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
-                break;
-            case 'same':
-                return $carry . TAB . "  {$key}: " . prettyTypes($diff[$key]['actual']) . "\n";
-                break;
+    $line = function($key, $value) {
+        switch (getStatus($value)) {
+            case 'added': return [
+                [
+                    'prefix' => "+ {$key}: ", 
+                    'value' => getActual($value),
+                    'type' => getType($value),
+                ]
+            ];
+            case 'deleted': return [
+                [
+                    'prefix' => "- {$key}: ",
+                    'value' => getOld($value),
+                    'type' => getType($value),
+                ]
+            ];
+            case 'changed': return [
+                [
+                    'prefix' => "- {$key}: ",
+                    'value' => getOld($value),
+                    'type' => getType($value),
+                ], 
+                [
+                    'prefix' => "+ {$key}: ",
+                    'value' => getActual($value),
+                    'type' => getType($value),
+                ]
+            ];
+            case 'same': return  [
+                [
+                    'prefix' => "  {$key}: ",
+                    'value' => getActual($value),
+                    'type' => getType($value),
+                ]
+            ];
         }
-    }, '');
+    };
 
-    return "{\n$fieldsString}\n";
+    $lines = array_map(
+        fn($key, $value) => $line($key, $value),
+        array_keys($diff),
+        $diff
+    );
+
+    
+
+    $fieldsString = implode("\n", Collection\flatten($lines));
+    return "{\n$fieldsString\n}";
+}
+
+function stringify($input, $replacer = ' ', $spacesCount = 1)
+{
+    $intend = str_repeat($replacer, $spacesCount);
+
+    $iter = function ($input, $depth) use (&$iter, $intend) {
+        if (!is_array($input)) {
+            return toString($input);
+        }
+
+        $depthIntend = str_repeat($intend, $depth + 1);
+        $bracketIntend = str_repeat($intend, $depth);
+
+        $lines = array_map(
+            fn($key, $value) => "{$depthIntend}{$key}: {$iter($value, $depth + 1)}",
+            array_keys($input),
+            array_values($input)
+        );
+
+        $result = ['{', ...$lines, "{$bracketIntend}}"];
+        return implode("\n", $result);
+    };
+
+    return $iter($input, 0);
 }
 
 function toString($input)
 {
     return trim(var_export($input, true), "'");
-}
-
-function stringify($input, $replacer = ' ', $spacesCount = 1)
-{
-
-    $intend = str_repeat($replacer, $spacesCount);
-    $iter = function ($array, $depth) use (&$iter, $intend) {
-        $result = "{\n";
-        $depthIntend = str_repeat($intend, $depth + 1);
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $result .= $depthIntend . toString($key) . ': ' . $iter($value, $depth + 1) . $depthIntend . "}\n";
-            } else {
-                $result .= $depthIntend . toString($key) . ': ' . toString($value) . "\n";
-            }
-        }
-        return $result;
-    };
-
-    if (is_array($input)) {
-        return $iter($input, 0) . '}';
-    }
-
-    return toString($input);
-}
-
-function stringifyT($value, string $replacer = ' ', int $spacesCount = 1): string
-{
-    $iter = function ($currentValue, $depth) use (&$iter, $replacer, $spacesCount) {
-        if (!is_array($currentValue)) {
-            return toString($currentValue);
-        }
-
-        $indentSize = $depth * $spacesCount;
-        $currentIndent = str_repeat($replacer, $indentSize);
-        $bracketIndent = str_repeat($replacer, $indentSize - $spacesCount);
-
-        $lines = array_map(
-            fn($key, $val) => "{$currentIndent}{$key}: {$iter($val, $depth + 1)}",
-            array_keys($currentValue),
-            $currentValue
-        );
-
-        $result = ['{', ...$lines, "{$bracketIndent}}"];
-
-        return implode("\n", $result);
-    };
-
-    return $iter($value, 1);
-}
-
-function printDiffInTerminal($diff)
-{
-    $old = '-';
-    $new = '+';
-    $same = ' ';
-
-    line('{');
-    foreach ($diff as $key => $value) {
-        $status = $value['diff'];
-        switch ($status) {
-            case 'added':
-                line(" %s %s: %s", $new, $key, prettyTypes($value['actual']));
-                break;
-            case 'deleted':
-                line(" %s %s: %s", $old, $key, prettyTypes($value['old']));
-                break;
-            case 'changed':
-                line(" %s %s: %s", $old, $key, prettyTypes($value['old']));
-                line(" %s %s: %s", $new, $key, prettyTypes($value['actual']));
-                break;
-            case 'same':
-                line(" %s %s: %s", $same, $key, prettyTypes($value['actual']));
-                break;
-        }
-    }
-    line('}');
-}
-
-function prettyTypes($value)
-{
-    if ($value === true) {
-        return 'true';
-    } elseif ($value === false) {
-        return 'false';
-    } else {
-        return $value;
-    }
 }
 
 function genDiff(array $first, array $second)
@@ -153,11 +118,6 @@ function genDiff(array $first, array $second)
             [$key, $value] = $item;
             [$first, $second] = $value;
 
-            $carry[$key] = [
-                'old' => $first,
-                'actual' => $second
-            ];
-
             if ($first === null and $second !== null) {
                 $carry[$key]['diff'] = 'added';
             } elseif ($first !== null and $second === null) {
@@ -168,8 +128,38 @@ function genDiff(array $first, array $second)
                 $carry[$key]['diff'] = 'changed';
             }
 
+            if(is_object($first) and is_object($second)) {
+                $carry[$key]['type'] = 'node';
+                $carry[$key]['old'] = $first;
+                $carry[$key]['actual'] = genDiff((array)$first, (array)$second);
+            } else {
+                $carry[$key]['type'] = 'leaf';
+                $carry[$key]['old'] = $first;
+                $carry[$key]['actual'] = $second;
+            }
+
             return $carry;
     }, []);
+}
+
+function getStatus($node)
+{
+    return $node['diff'];
+}
+
+function getType($node)
+{
+    return $node['type'];
+}
+
+function getOld($node)
+{
+    return $node['old'];
+}
+
+function getActual($node)
+{
+    return $node['actual'];
 }
 
 /* Альтернативный вариант функции genDiff. на мой вкус, в императивном стиле выглядит поэлегантнее
