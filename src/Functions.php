@@ -23,7 +23,9 @@ function printDiff(string $first, string $second, string $format = 'stylish')
 
 function makeStylishString($diff)
 {
-    ksort($diff);
+    if(!is_array($diff)) {
+        return $diff;
+    }
 
     $line = function($key, $value) {
         switch (getStatus($value)) {
@@ -31,48 +33,47 @@ function makeStylishString($diff)
                 [
                     'prefix' => "+ {$key}: ", 
                     'value' => getActual($value),
-                    'type' => getType($value),
                 ]
             ];
             case 'deleted': return [
                 [
                     'prefix' => "- {$key}: ",
                     'value' => getOld($value),
-                    'type' => getType($value),
                 ]
             ];
             case 'changed': return [
                 [
                     'prefix' => "- {$key}: ",
                     'value' => getOld($value),
-                    'type' => getType($value),
                 ], 
                 [
                     'prefix' => "+ {$key}: ",
                     'value' => getActual($value),
-                    'type' => getType($value),
                 ]
             ];
             case 'same': return  [
                 [
                     'prefix' => "  {$key}: ",
                     'value' => getActual($value),
-                    'type' => getType($value),
                 ]
             ];
         }
     };
 
-    $lines = array_map(
+    $lines = Collection\flatten(array_map(
         fn($key, $value) => $line($key, $value),
         array_keys($diff),
         $diff
+    ));
+
+    $linesInDepth = array_map(
+        function($lineInDepth) {
+            return makeStylishString($lineInDepth['value']);
+        },
+        $lines
     );
 
-    
-
-    $fieldsString = implode("\n", Collection\flatten($lines));
-    return "{\n$fieldsString\n}";
+    return stringify($lines, ' ', 4);
 }
 
 function stringify($input, $replacer = ' ', $spacesCount = 1)
@@ -80,7 +81,7 @@ function stringify($input, $replacer = ' ', $spacesCount = 1)
     $intend = str_repeat($replacer, $spacesCount);
 
     $iter = function ($input, $depth) use (&$iter, $intend) {
-        if (!is_array($input)) {
+        if (!is_array($input) and !is_object($input)) {
             return toString($input);
         }
 
@@ -129,13 +130,19 @@ function genDiff(array $first, array $second)
             }
 
             if(is_object($first) and is_object($second)) {
+                $carry[$key]['diff'] = 'same';
                 $carry[$key]['type'] = 'node';
-                $carry[$key]['old'] = $first;
                 $carry[$key]['actual'] = genDiff((array)$first, (array)$second);
             } else {
                 $carry[$key]['type'] = 'leaf';
                 $carry[$key]['old'] = $first;
                 $carry[$key]['actual'] = $second;
+            }
+
+            if(is_object($first) or is_object($second)) {
+                $carry[$key]['type'] = 'node';
+            } else {
+                $carry[$key]['type'] = 'leaf';
             }
 
             return $carry;
