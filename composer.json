@@ -9,7 +9,10 @@
         },
         "files": [
             "src/Functions.php",
-            "src/Parsers.php"
+            "src/Parsers.php",
+            "src/Formatters.php",
+            "src/Node.php",
+            "src/Records.php"
         ]
     },
     "authors": [

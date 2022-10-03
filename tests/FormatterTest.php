@@ -9,11 +9,11 @@ use function Gen\Diff\makeStylishString;
 
 class FormatterTest extends TestCase
 {
-    private $expectedPlain;
+  private $expectedPlain;
 
-    public function setUp(): void
-    {
-        $this->expectedPlain = <<<E
+  public function setUp(): void
+  {
+    $this->expectedPlain = <<<E
 {
   - follow: false
     host: hexlet.io
@@ -23,7 +23,7 @@ class FormatterTest extends TestCase
   + verbose: true
 }
 E;
-        $this->expectedNested = <<<E
+  $this->expectedNested = <<<E
 {
     common: {
       + follow: false
@@ -69,34 +69,37 @@ E;
     }
 }
 E;
-    }
+  }
 
-    /**
-     * @covers Gen\Diff\makeStylishString
-     * @covers Gen\Diff\genDiff
-     * @covers Gen\Diff\parseFile
-     * @covers Gen\Diff\parseJson
-     * @covers Gen\Diff\parseYaml
-     */
-    public function testMakeStylishString()
-    {
-        $first = parseFile('tests/fixtures/json/file1.json');
-        $second = parseFile('tests/fixtures/json/file2.json');
+  /**
+   * @covers Gen\Diff\makeStylishString
+   * @covers Gen\Diff\genDiff
+   * @covers Gen\Diff\parseFile
+   * @covers Gen\Diff\parseJson
+   * @covers Gen\Diff\parseYaml
+   */
+  public function testMakeStylishString()
+  {
+    $first = parseFile('tests/fixtures/json/file1.json');
+    $second = parseFile('tests/fixtures/json/file2.json');
 
-        $diff = genDiff($first, $second);
-        $actual = makeStylishString($diff);
+    $diff = genDiff($first, $second);
 
-        $this->assertEquals($this->expectedPlain, $actual);
-    }
+    $actual = makeStylishString($diff);
 
-    public function testMakeStylishStringRecursive()
-    {
-        $first = parseFile('tests/fixtures/rec/file1.json');
-        $second = parseFile('tests/fixtures/rec/file2.json');
+    $this->assertEquals($this->expectedPlain, $actual);
+  }
 
-        $diff = genDiff($first, $second);
-        $actual = makeStylishString($diff);
+  public function testMakeStylishStringRecursive()
+  {
+    $first = parseFile('tests/fixtures/rec/file1.json');
+    $second = parseFile('tests/fixtures/rec/file2.json');
 
-        //$this->assertEquals($this->expectedNested, $actual);
-    }
+    $diff = genDiff($first, $second);  
+    
+    file_put_contents('diff.php', "<?php\n" . var_export($diff, true));
+    $actual = makeStylishString($diff);
+
+    $this->assertEquals($this->expectedPlain, $actual);
+  }
 }
