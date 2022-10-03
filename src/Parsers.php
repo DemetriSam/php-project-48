@@ -27,7 +27,7 @@ function parseFile($filePath): array
 
 function parseJson($filePath)
 {
-    return (array) json_decode(file_get_contents($filePath));
+    return (array) json_decode(file_get_contents($filePath), true);
 }
 
 function parseYaml($filePath)

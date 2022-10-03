@@ -7,15 +7,15 @@ function makeRecords($node)
     $key = getKey($node);
     $old = getOld($node);
     $actual = getActual($node);
-    $nodeStatus = getStatus($node);
+    $diffStatus = getStatus($node);
 
-    switch ($nodeStatus) {
+    switch ($diffStatus) {
         case 'added': return [
             [
                 'record' => $actual,
                 'status' => 'actual',
                 'tag' => '+',
-                ...compact('key', 'nodeStatus'),
+                ...compact('key', 'diffStatus'),
             ]
         ];
         
@@ -24,7 +24,7 @@ function makeRecords($node)
                 'record' => $old,
                 'status' => 'old',
                 'tag' => '-',
-                ...compact('key', 'nodeStatus'),
+                ...compact('key', 'diffStatus'),
             ]
         ];
 
@@ -33,7 +33,7 @@ function makeRecords($node)
                 'record' => $actual,
                 'status' => 'actual',
                 'tag' => ' ',
-                ...compact('key', 'nodeStatus'),
+                ...compact('key', 'diffStatus'),
             ]
         ];
 
@@ -42,13 +42,13 @@ function makeRecords($node)
                 'record' => $old,
                 'status' => 'old',
                 'tag' => '-',
-                ...compact('key', 'nodeStatus'),
+                ...compact('key', 'diffStatus'),
             ],
             [
                 'record' => $actual,
                 'status' => 'actual',
                 'tag' => '+',
-                ...compact('key', 'nodeStatus'),
+                ...compact('key', 'diffStatus'),
             ],
         ];
     }

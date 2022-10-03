@@ -17,24 +17,57 @@ function printDiff(string $first, string $second, string $format = 'stylish')
 
 function genDiff(array $first, array $second)
 {
-    $keys = array_keys(array_merge($first, $second));
+    $keysCommonTree = buildKeysCommonTree($first, $second);
+    $diffTree = buildDiffTree($keysCommonTree, $first, $second);
+}
 
-    sort($keys);
+function compareThePair($first, $second)
+{
+    if ($first === null and $second !== null) {
+        return makeDiff($key, $values, 'added');
+    } elseif ($first !== null and $second === null) {
+        return makeDiff($key, $values, 'deleted');
+    } elseif ($first === $second) {
+        return makeDiff($key, $values, 'same');
+    } else {
+        return makeDiff($key, $values, 'changed');
+    }   
+}
 
-    $plucked = array_map(fn($key) => [$key, Collection\pluck([$first, $second], $key)], $keys);
+function buildDiffTree($keysCommonTree, $first, $second)
+{
+    $diffTree = array_map(
+        function($node) use ($first, $second) {
+            
+            $diff = compareThePair();
+        },
+        $keysCommonTree
+    );
+}
 
-    return array_map(function($diff) {
-        [$key, $values] = $diff;
-        [$first, $second] = $values;
+function buildKeysCommonTree(array $first, array $second = [])
+{
+    $mergedKeys = array_keys(array_merge($first, $second));
 
-        if ($first === null and $second !== null) {
-            return makeNode($key, $values, 'added');
-        } elseif ($first !== null and $second === null) {
-            return makeNode($key, $values, 'deleted');
-        } elseif ($first === $second) {
-            return makeNode($key, $values, 'same');
-        } else {
-            return makeNode($key, $values, 'changed');
-        }        
-    }, $plucked);
+    return array_map(
+        function ($key) use ($first, $second) {
+            if (isset($first[$key]) and is_array($first[$key]) and isset($second[$key]) and is_array($second[$key])) {
+                $children = buildKeysCommonTree($first[$key], $second[$key]);
+                $type = 'nodeBoth';
+                return compact('key', 'type', 'children');
+            } elseif(isset($first[$key]) and is_array($first[$key])) {
+                $children = buildKeysCommonTree($first[$key]);
+                $type = 'nodeFirst';
+                return compact('key', 'type', 'children');
+            } elseif(isset($second[$key]) and is_array($second[$key])) {
+                $children = buildKeysCommonTree($second[$key]);
+                $type = 'nodeSecond';
+                return compact('key', 'type', 'children');
+            } else {
+                $type = 'leaf';
+                return compact('key', 'type');
+            }
+        },
+        $mergedKeys
+    );
 }

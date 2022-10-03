@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use function Gen\Diff\genDiff;
 use function Gen\Diff\parseFile;
 use function Gen\Diff\makeStylishString;
+use function Gen\Diff\stringify;
 
 class FormatterTest extends TestCase
 {
@@ -84,6 +85,7 @@ E;
     $second = parseFile('tests/fixtures/json/file2.json');
 
     $diff = genDiff($first, $second);
+    file_put_contents('diff.php', "<?php\n" . stringify($diff));
 
     $actual = makeStylishString($diff);
 
@@ -97,7 +99,7 @@ E;
 
     $diff = genDiff($first, $second);  
     
-    file_put_contents('diff.php', "<?php\n" . var_export($diff, true));
+    file_put_contents('diffRec.php', "<?php\n" . stringify($diff));
     $actual = makeStylishString($diff);
 
     $this->assertEquals($this->expectedPlain, $actual);
