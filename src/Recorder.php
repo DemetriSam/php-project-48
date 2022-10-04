@@ -8,22 +8,48 @@ use Gen\Diff\Records;
 
 function record($tree, $first, $second)
 {
-    $tree = Collection\sortBy($tree, fn($node) => getKey($node));
+    $iter = function ($tree, $path = []) use (&$iter, $first, $second) {
+        
+
+        $tree = Collection\sortBy($tree, fn($node) => getKey($node));
+
+        $records = array_reduce($tree, function($records, $node) use ($iter, $first, $second, $path) {
+            
+            $key = getKey($node);
+            $path[] = $key;
+
+            $firstValue = getValueByPath($first, $path);
+            $secondValue = getValueByPath($second, $path);
+
+            $type = getType($node);
+
+            if($type === 'leaf') {
+                $diff = Diff\makeDiff($key, $firstValue, $secondValue);
+                $records = array_merge($records, Records\makeRecords($diff, $path));
+            }
     
-    $records = array_reduce($tree, function($records, $node) use ($first, $second) {
-        $type = getType($node);
-        $key = getKey($node);
+            if($type === 'nodeBoth') {
+                $childRecords = $iter(getChildren($node), $path);
+                $parentRecord = Records\makeParentRecord($childRecords, $key, 'same', $path);
 
-        if($type === 'leaf') {
-            $firstValue = isset($first[$key]) ? $first[$key]: null;
-            $secondValue = isset($second[$key]) ? $second[$key]: null;
-
-            $diff = Diff\makeDiff($key, $firstValue, $secondValue);
-            $records = array_merge($records, Records\makeRecords($diff));
-        }
+                $records = array_merge($records, $parentRecord);
+            }
+            
+            return $records;
+            
+        }, []);
 
         return $records;
-    }, []);
+    };
 
-    return $records;
+    return $iter($tree);
+}
+
+function getValueByPath($array, $path)
+{
+    foreach($path as $key) {
+        $array = isset($array[$key]) ? $array[$key] : null;
+    }
+
+    return $array;
 }
