@@ -18,31 +18,23 @@ function printDiff(string $first, string $second, string $format = 'stylish')
 function genDiff(array $first, array $second)
 {
     $keysCommonTree = buildKeysCommonTree($first, $second);
-    $diffTree = buildDiffTree($keysCommonTree, $first, $second);
+    $records = record($keysCommonTree, $first, $second);
+    $string = makeString($records);
+
+    return $string;
 }
 
-function compareThePair($first, $second)
-{
-    if ($first === null and $second !== null) {
-        return makeDiff($key, $values, 'added');
-    } elseif ($first !== null and $second === null) {
-        return makeDiff($key, $values, 'deleted');
-    } elseif ($first === $second) {
-        return makeDiff($key, $values, 'same');
-    } else {
-        return makeDiff($key, $values, 'changed');
-    }   
-}
 
-function buildDiffTree($keysCommonTree, $first, $second)
+
+function buildDictOfValues($keysCommonTree, $first, $second)
 {
-    $diffTree = array_map(
-        function($node) use ($first, $second) {
-            
-            $diff = compareThePair();
-        },
-        $keysCommonTree
-    );
+
+    $iter = function($node, $path = []) use (&$iter, $first, $second) {
+
+    };
+    $dictOfValues = array_reduce($keysCommonTree, function($carry, $node) use ($first, $second) {
+
+    });
 }
 
 function buildKeysCommonTree(array $first, array $second = [])
@@ -70,4 +62,14 @@ function buildKeysCommonTree(array $first, array $second = [])
         },
         $mergedKeys
     );
+}
+
+function getType($node)
+{
+    return $node['type'];
+}
+
+function getKey($node)
+{
+    return $node['key'];
 }

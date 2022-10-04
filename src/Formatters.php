@@ -3,13 +3,12 @@
 namespace Gen\Diff;
 
 use Funct\Collection;
+use Gen\Diff\Records;
 
-function makeStylishString($diff)
+function makeStylishString($records)
 {
-    $records = array_map(fn($node) => makeRecords($node), $diff);
-    $flatten = flattenRecursive($records);
 
-    return makeString($flatten);
+    return makeString($records);
 }
 
 function makeString($input, $replacer = ' ', $spacesCount = 2)
@@ -17,7 +16,7 @@ function makeString($input, $replacer = ' ', $spacesCount = 2)
     $intend = str_repeat($replacer, $spacesCount);
 
     $iter = function ($input, $depth) use (&$iter, $intend) {
-        if (!is_array($input) and !is_object($input)) {
+        if (!is_array($input)) {
             return toString($input);
         }
 
@@ -26,9 +25,9 @@ function makeString($input, $replacer = ' ', $spacesCount = 2)
 
         $lines = array_map(
             function($record) use ($depthIntend, $iter, $depth) {
-                $tag = getRecordTag($record);
-                $key = getRecordKey($record);
-                $value = getRecordValue($record);
+                $tag = Records\getTag($record);
+                $key = Records\getKey($record);
+                $value = Records\getValue($record);
 
                 return "{$depthIntend}{$tag} {$key}: {$iter($value, $depth + 1)}";
             },

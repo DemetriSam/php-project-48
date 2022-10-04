@@ -84,24 +84,11 @@ E;
     $first = parseFile('tests/fixtures/json/file1.json');
     $second = parseFile('tests/fixtures/json/file2.json');
 
-    $diff = genDiff($first, $second);
-    file_put_contents('diff.php', "<?php\n" . stringify($diff));
-
-    $actual = makeStylishString($diff);
+    $actual = genDiff($first, $second);
+    file_put_contents('records.php', "<?php\n" . $actual);
 
     $this->assertEquals($this->expectedPlain, $actual);
   }
 
-  public function testMakeStylishStringRecursive()
-  {
-    $first = parseFile('tests/fixtures/rec/file1.json');
-    $second = parseFile('tests/fixtures/rec/file2.json');
 
-    $diff = genDiff($first, $second);  
-    
-    file_put_contents('diffRec.php', "<?php\n" . stringify($diff));
-    $actual = makeStylishString($diff);
-
-    $this->assertEquals($this->expectedPlain, $actual);
-  }
 }

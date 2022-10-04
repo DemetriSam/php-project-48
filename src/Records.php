@@ -1,13 +1,15 @@
 <?php
 
-namespace Gen\Diff;
+namespace Gen\Diff\Records;
 
-function makeRecords($node)
+use Gen\Diff\Diff;
+
+function makeRecords($diff)
 {
-    $key = getKey($node);
-    $old = getOld($node);
-    $actual = getActual($node);
-    $diffStatus = getStatus($node);
+    $key = Diff\getKey($diff);
+    $old = Diff\getOld($diff);
+    $actual = Diff\getActual($diff);
+    $diffStatus = Diff\getStatus($diff);
 
     switch ($diffStatus) {
         case 'added': return [
@@ -55,17 +57,17 @@ function makeRecords($node)
 }
 
 
-function getRecordTag($record)
+function getTag($record)
 {
     return $record['tag'];
 }
 
-function getRecordKey($record)
+function getKey($record)
 {
     return $record['key'];
 }
 
-function getRecordValue($record)
+function getValue($record)
 {
     return $record['record'];
 }

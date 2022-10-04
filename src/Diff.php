@@ -1,12 +1,25 @@
 <?php
 
-namespace Gen\Diff;
+namespace Gen\Diff\Diff;
 
-function makeDiff($key, $values, $status)
+function makeDiff($key, $old, $actual)
 {
-    [$old, $actual] = $values;
+    $status = compareThePair($old, $actual);
 
     return compact('key', 'old', 'actual', 'status');
+}
+
+function compareThePair($first, $second)
+{
+    if ($first === null and $second !== null) {
+        return 'added';
+    } elseif ($first !== null and $second === null) {
+        return 'deleted';
+    } elseif ($first === $second) {
+        return 'same';
+    } else {
+        return 'changed';
+    }   
 }
 
 function getOld($diff)
@@ -28,3 +41,4 @@ function getKey($diff)
 {
     return $diff['key'];
 }
+
