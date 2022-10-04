@@ -24,7 +24,7 @@ function record($tree, $first, $second)
             $type = getType($node);
 
             if($type === 'leaf') {
-                $diff = Diff\makeDiff($key, $firstValue, $secondValue);
+                $diff = Diff\makeDiff($key, $firstValue, $secondValue, $path, $first, $second);
                 $records = array_merge($records, Records\makeRecords($diff, $path));
             }
     

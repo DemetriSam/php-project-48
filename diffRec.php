@@ -5,6 +5,7 @@
         setting1: Value 1
       - setting2: 200
       - setting3: true
+      + setting3: null
       + setting4: blah blah
       setting6: {
         doge: {
@@ -19,16 +20,5 @@
       - baz: bas
       + baz: bars
         foo: bar
-  }
-    sameNode: {
-        setting1: Value 1
-        setting2: 200
-        setting3: true
-      setting6: {
-        doge: {
-            wow: 
-      }
-          key: value
-    }
   }
 }

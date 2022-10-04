@@ -48,7 +48,9 @@ function makeString($input, $replacer = ' ', $spacesCount = 2)
 
 function toString($input)
 {
-    return trim(var_export($input, true), "'");
+    $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
+    
+    return trim($exported, "'");
 }
 
 function flattenRecursive($items)

@@ -2,18 +2,28 @@
 
 namespace Gen\Diff\Diff;
 
-function makeDiff($key, $old, $actual)
+use function Gen\Diff\getValueByPath;
+
+function makeDiff($key, $old, $actual, $path, $firstArray, $secondArray)
 {
-    $status = compareThePair($old, $actual);
+    $status = compareThePair($old, $actual, $path, $firstArray, $secondArray);
 
     return compact('key', 'old', 'actual', 'status');
 }
 
-function compareThePair($first, $second)
+function compareThePair($first, $second, $path, $firstArray, $secondArray)
 {
-    if ($first === null and $second !== null) {
+    $key = array_pop($path);
+
+    $firstRoot = getValueByPath($firstArray, $path);
+    $secondRoot = getValueByPath($secondArray, $path);
+
+    $isKeyExistInTheFirstArray = is_array($firstRoot) ? array_key_exists($key, $firstRoot) : false;
+    $isKeyExistInTheSecondArray = is_array($secondRoot) ? array_key_exists($key, $secondRoot) : false;
+
+    if (!$isKeyExistInTheFirstArray and $isKeyExistInTheSecondArray) {
         return 'added';
-    } elseif ($first !== null and $second === null) {
+    } elseif ($isKeyExistInTheFirstArray and !$isKeyExistInTheSecondArray) {
         return 'deleted';
     } elseif ($first === $second) {
         return 'same';
