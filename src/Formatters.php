@@ -24,10 +24,15 @@ function makeString($input, $replacer = ' ', $spacesCount = 2)
         $bracketIntend = str_repeat($intend, $depth);
 
         $lines = array_map(
-            function($record) use ($depthIntend, $iter, $depth) {
+            function($record) use ($depthIntend, $bracketIntend, $iter, $depth) {
                 $tag = Records\getTag($record);
                 $key = Records\getKey($record);
                 $value = Records\getValue($record);
+                
+                
+                if(Records\getType($record) === 'node') {
+                    return "{$bracketIntend}{$tag} {$key}: {$iter($value, $depth + 1)}";    
+                }
 
                 return "{$depthIntend}{$tag} {$key}: {$iter($value, $depth + 1)}";
             },
