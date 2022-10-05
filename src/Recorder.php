@@ -18,14 +18,14 @@ function record($tree, $first, $second)
             $key = getKey($node);
             $path[] = $key;
 
-            $firstValue = getValueByPath($first, $path);
-            $secondValue = getValueByPath($second, $path);
+            $firstValue = Diff\getValueByPath($first, $path);
+            $secondValue = Diff\getValueByPath($second, $path);
 
             $type = getType($node);
 
             if ($type === 'leaf') {
                 $diff = Diff\makeDiff($key, $firstValue, $secondValue, $path, $first, $second);
-                $records = array_merge($records, Records\makeRecords($diff));
+                $records = array_merge($records, Records\makeRecordsByDiff($diff));
             }
 
             if ($type === 'nodeBoth') {
@@ -37,9 +37,9 @@ function record($tree, $first, $second)
 
             if ($type === 'nodeFirst') {
                 $childRecords = Records\makeRecordsWithoutCompare($firstValue);
-                $parentRecord = Records\makeParentRecord($childRecords, $key, 'deleted', $path);
+                $parentRecord = Records\makeParentRecord($childRecords, $key, 'removed', $path);
 
-                $singleRecord = Diff\is_key_exists_in_depth($path, $second) ?
+                $singleRecord = Diff\isKeyExistsInDepth($path, $second) ?
                                 Records\makeSingleRecord($key, $secondValue, 'added') :
                                 [];
 
@@ -47,8 +47,8 @@ function record($tree, $first, $second)
             }
 
             if ($type === 'nodeSecond') {
-                $singleRecord = Diff\is_key_exists_in_depth($path, $first) ?
-                                Records\makeSingleRecord($key, $firstValue, 'deleted') :
+                $singleRecord = Diff\isKeyExistsInDepth($path, $first) ?
+                                Records\makeSingleRecord($key, $firstValue, 'removed') :
                                 [];
 
                 $childRecords = Records\makeRecordsWithoutCompare($secondValue);
@@ -64,13 +64,4 @@ function record($tree, $first, $second)
     };
 
     return $iter($tree);
-}
-
-function getValueByPath($array, $path)
-{
-    foreach ($path as $key) {
-        $array = isset($array[$key]) ? $array[$key] : null;
-    }
-
-    return $array;
 }

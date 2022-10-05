@@ -10,10 +10,13 @@
         "files": [
             "src/Functions.php",
             "src/Parsers.php",
+            "src/CommonTreeOfKeys.php",
             "src/Formatters.php",
-            "src/Diff.php",
-            "src/Records.php",
-            "src/Recorder.php"
+            "src/Entities/Diff.php",
+            "src/Entities/Records.php",
+            "src/Recorder.php",
+            "src/Formatters/StylishFormatter.php",
+            "src/Formatters/PlainFormatter.php"
         ]
     },
     "authors": [
