@@ -27,11 +27,11 @@ function makeString($input, $replacer = ' ', $spacesCount = 4)
         $bracketIndent = str_repeat($indent, $depth);
 
         $lines = array_map(
-            function($record) use ($itemIndent, $iter, $depth) {
+            function ($record) use ($itemIndent, $iter, $depth) {
                 $tag = Records\getTag($record);
                 $key = Records\getKey($record);
                 $value = Records\getValue($record);
-                
+
                 $result = "{$itemIndent}{$tag}{$key}: {$iter($value, $depth + 1)}";
                 return rtrim($result);
             },
@@ -48,7 +48,7 @@ function makeString($input, $replacer = ' ', $spacesCount = 4)
 function toString($input)
 {
     $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
-    
+
     return trim($exported, "'");
 }
 

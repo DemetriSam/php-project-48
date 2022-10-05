@@ -24,7 +24,7 @@ function compareThePair($first, $second, $path, $firstArray, $secondArray)
         return 'same';
     } else {
         return 'changed';
-    }   
+    }
 }
 
 function is_key_exists_in_depth($path, $array)
@@ -53,4 +53,3 @@ function getKey($diff)
 {
     return $diff['key'];
 }
-

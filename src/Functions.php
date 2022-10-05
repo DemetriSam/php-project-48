@@ -29,11 +29,9 @@ function genDiff(array $first, array $second)
 function buildDictOfValues($keysCommonTree, $first, $second)
 {
 
-    $iter = function($node, $path = []) use (&$iter, $first, $second) {
-
+    $iter = function ($node, $path = []) use (&$iter, $first, $second) {
     };
-    $dictOfValues = array_reduce($keysCommonTree, function($carry, $node) use ($first, $second) {
-
+    $dictOfValues = array_reduce($keysCommonTree, function ($carry, $node) use ($first, $second) {
     });
 }
 
@@ -47,11 +45,11 @@ function buildKeysCommonTree(array $first, array $second = [])
                 $children = buildKeysCommonTree($first[$key], $second[$key]);
                 $type = 'nodeBoth';
                 return compact('key', 'type', 'children');
-            } elseif(isset($first[$key]) and is_array($first[$key])) {
+            } elseif (isset($first[$key]) and is_array($first[$key])) {
                 $children = buildKeysCommonTree($first[$key]);
                 $type = 'nodeFirst';
                 return compact('key', 'type', 'children');
-            } elseif(isset($second[$key]) and is_array($second[$key])) {
+            } elseif (isset($second[$key]) and is_array($second[$key])) {
                 $children = buildKeysCommonTree($second[$key]);
                 $type = 'nodeSecond';
                 return compact('key', 'type', 'children');

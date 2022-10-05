@@ -17,50 +17,54 @@ function makeRecords($diff, $path)
     $type = 'leaf';
 
     switch ($diffStatus) {
-        case 'added': return [
+        case 'added':
+            return [
             [
                 ...compact('key', 'diffStatus', 'path', 'type'),
                 'record' => $actual,
                 'status' => 'actual',
                 'tag' => PLUS,
-                
+
             ]
         ];
-        
-        case 'deleted': return [
+
+        case 'deleted':
+            return [
             [
                 ...compact('key', 'diffStatus', 'path', 'type'),
                 'record' => $old,
                 'status' => 'old',
                 'tag' => MINUS,
-                
+
             ]
         ];
 
-        case 'same': return [
+        case 'same':
+            return [
             [
                 ...compact('key', 'diffStatus', 'path', 'type'),
                 'record' => $actual,
                 'status' => 'actual',
                 'tag' => EMPTY_TAG,
-                
+
             ]
         ];
 
-        case 'changed': return [
+        case 'changed':
+            return [
             [
                 ...compact('key', 'diffStatus', 'path', 'type'),
                 'record' => $old,
                 'status' => 'old',
                 'tag' => MINUS,
-                
+
             ],
             [
                 ...compact('key', 'diffStatus', 'path', 'type'),
                 'record' => $actual,
                 'status' => 'actual',
                 'tag' => PLUS,
-                
+
             ],
         ];
     }
@@ -68,13 +72,13 @@ function makeRecords($diff, $path)
 
 function makeParentRecord($childRecords, $key, $diffStatus, $path)
 {
-    if($diffStatus === 'same') {
+    if ($diffStatus === 'same') {
         $tag = EMPTY_TAG;
         $status = 'actual';
-    } elseif($diffStatus === 'added') {
+    } elseif ($diffStatus === 'added') {
         $tag = PLUS;
         $status = 'actual';
-    } elseif($diffStatus === 'deleted') {
+    } elseif ($diffStatus === 'deleted') {
         $tag = MINUS;
         $status = 'old';
     }
@@ -91,11 +95,11 @@ function makeParentRecord($childRecords, $key, $diffStatus, $path)
 function makeRecordsWithoutCompare($tree)
 {
     return array_map(
-        function($key, $value) {
+        function ($key, $value) {
             $tag = EMPTY_TAG;
             $status = 'not_compared';
 
-            if(!is_array($value)) {
+            if (!is_array($value)) {
                 $record = $value;
                 $type = 'leaf';
             } else {
@@ -112,13 +116,13 @@ function makeRecordsWithoutCompare($tree)
 
 function makeSingleRecord($key, $value, $diffStatus)
 {
-    if($diffStatus === 'same') {
+    if ($diffStatus === 'same') {
         $tag = EMPTY_TAG;
         $status = 'actual';
-    } elseif($diffStatus === 'added') {
+    } elseif ($diffStatus === 'added') {
         $tag = PLUS;
         $status = 'actual';
-    } elseif($diffStatus === 'deleted') {
+    } elseif ($diffStatus === 'deleted') {
         $tag = MINUS;
         $status = 'old';
     }
@@ -133,8 +137,6 @@ function getTag($record)
 {
 
     return $record['tag'];
-
-    
 }
 
 function getKey($record)
