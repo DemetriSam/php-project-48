@@ -8,7 +8,7 @@ const PLUS = '+ ';
 const MINUS = '- ';
 const EMPTY_TAG = '  ';
 
-function makeRecords($diff, $path)
+function makeRecords($diff)
 {
     $key = Diff\getKey($diff);
     $old = Diff\getOld($diff);
