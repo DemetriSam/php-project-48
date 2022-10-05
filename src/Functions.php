@@ -19,9 +19,6 @@ function genDiff(array $first, array $second)
 {
     $keysCommonTree = buildKeysCommonTree($first, $second);
     $records = record($keysCommonTree, $first, $second);
-
-    file_put_contents('records.php', "<?php\n" . var_export($records, true));
-
     $string = makeString($records);
 
     return $string;

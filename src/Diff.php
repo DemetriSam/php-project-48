@@ -13,13 +13,8 @@ function makeDiff($key, $old, $actual, $path, $firstArray, $secondArray)
 
 function compareThePair($first, $second, $path, $firstArray, $secondArray)
 {
-    $key = array_pop($path);
-
-    $firstRoot = getValueByPath($firstArray, $path);
-    $secondRoot = getValueByPath($secondArray, $path);
-
-    $isKeyExistInTheFirstArray = is_array($firstRoot) ? array_key_exists($key, $firstRoot) : false;
-    $isKeyExistInTheSecondArray = is_array($secondRoot) ? array_key_exists($key, $secondRoot) : false;
+    $isKeyExistInTheFirstArray = is_key_exists_in_depth($path, $firstArray);
+    $isKeyExistInTheSecondArray = is_key_exists_in_depth($path, $secondArray);
 
     if (!$isKeyExistInTheFirstArray and $isKeyExistInTheSecondArray) {
         return 'added';
@@ -30,6 +25,13 @@ function compareThePair($first, $second, $path, $firstArray, $secondArray)
     } else {
         return 'changed';
     }   
+}
+
+function is_key_exists_in_depth($path, $array)
+{
+    $key = array_pop($path);
+    $root = getValueByPath($array, $path);
+    return is_array($root) ? array_key_exists($key, $root) : false;
 }
 
 function getOld($diff)

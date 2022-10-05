@@ -4,9 +4,9 @@ namespace Gen\Diff\Records;
 
 use Gen\Diff\Diff;
 
-const PLUS = '  +';
-const MINUS = '  -';
-const EMPTY_TAG = '   ';
+const PLUS = '+ ';
+const MINUS = '- ';
+const EMPTY_TAG = '  ';
 
 function makeRecords($diff, $path)
 {
@@ -70,10 +70,13 @@ function makeParentRecord($childRecords, $key, $diffStatus, $path)
 {
     if($diffStatus === 'same') {
         $tag = EMPTY_TAG;
+        $status = 'actual';
     } elseif($diffStatus === 'added') {
         $tag = PLUS;
+        $status = 'actual';
     } elseif($diffStatus === 'deleted') {
-        $tag = EMPTY_TAG;
+        $tag = MINUS;
+        $status = 'old';
     }
 
     return [
@@ -81,15 +84,57 @@ function makeParentRecord($childRecords, $key, $diffStatus, $path)
             ...compact('key', 'tag', 'diffStatus', 'path'),
             'type' => 'node',
             'record' => $childRecords,
-            'status' => 'actual',
         ]
     ];
 }
 
+function makeRecordsWithoutCompare($tree)
+{
+    return array_map(
+        function($key, $value) {
+            $tag = EMPTY_TAG;
+            $status = 'not_compared';
+
+            if(!is_array($value)) {
+                $record = $value;
+                $type = 'leaf';
+            } else {
+                $record = makeRecordsWithoutCompare($value);
+                $type = 'node';
+            }
+
+            return compact('key', 'record', 'type', 'tag');
+        },
+        array_keys($tree),
+        $tree
+    );
+}
+
+function makeSingleRecord($key, $value, $diffStatus)
+{
+    if($diffStatus === 'same') {
+        $tag = EMPTY_TAG;
+        $status = 'actual';
+    } elseif($diffStatus === 'added') {
+        $tag = PLUS;
+        $status = 'actual';
+    } elseif($diffStatus === 'deleted') {
+        $tag = MINUS;
+        $status = 'old';
+    }
+
+    $type = 'leaf';
+    $record = $value;
+
+    return [compact('key', 'diffStatus', 'type', 'record', 'tag', 'status')];
+}
 
 function getTag($record)
 {
+
     return $record['tag'];
+
+    
 }
 
 function getKey($record)

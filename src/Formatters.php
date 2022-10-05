@@ -11,35 +11,34 @@ function makeStylishString($records)
     return makeString($records);
 }
 
-function makeString($input, $replacer = ' ', $spacesCount = 2)
+function makeString($input, $replacer = ' ', $spacesCount = 4)
 {
-    $intend = str_repeat($replacer, $spacesCount);
+    $indent = str_repeat($replacer, $spacesCount);
 
-    $iter = function ($input, $depth) use (&$iter, $intend) {
+    $iter = function ($input, $depth) use (&$iter, $indent) {
         if (!is_array($input)) {
             return toString($input);
         }
 
-        $depthIntend = str_repeat($intend, $depth + 1);
-        $bracketIntend = str_repeat($intend, $depth);
+        $startIndent = '  ';
+        $depthIndent = str_repeat($indent, $depth);
+
+        $itemIndent = "{$startIndent}{$depthIndent}";
+        $bracketIndent = str_repeat($indent, $depth);
 
         $lines = array_map(
-            function($record) use ($depthIntend, $bracketIntend, $iter, $depth) {
+            function($record) use ($itemIndent, $iter, $depth) {
                 $tag = Records\getTag($record);
                 $key = Records\getKey($record);
                 $value = Records\getValue($record);
                 
-                
-                if(Records\getType($record) === 'node') {
-                    return "{$bracketIntend}{$tag} {$key}: {$iter($value, $depth + 1)}";    
-                }
-
-                return "{$depthIntend}{$tag} {$key}: {$iter($value, $depth + 1)}";
+                $result = "{$itemIndent}{$tag}{$key}: {$iter($value, $depth + 1)}";
+                return rtrim($result);
             },
             $input
         );
 
-        $result = ['{', ...$lines, "{$bracketIntend}}"];
+        $result = ['{', ...$lines, "{$bracketIndent}}"];
         return implode("\n", $result);
     };
 
@@ -60,23 +59,23 @@ function flattenRecursive($items)
 
 function stringify($input, $replacer = ' ', $spacesCount = 1)
 {
-    $intend = str_repeat($replacer, $spacesCount);
+    $indent = str_repeat($replacer, $spacesCount);
 
-    $iter = function ($input, $depth) use (&$iter, $intend) {
+    $iter = function ($input, $depth) use (&$iter, $indent) {
         if (!is_array($input)) {
             return toString($input);
         }
 
-        $depthIntend = str_repeat($intend, $depth + 1);
-        $bracketIntend = str_repeat($intend, $depth);
+        $depthIndent = str_repeat($indent, $depth + 1);
+        $bracketIndent = str_repeat($indent, $depth);
 
         $lines = array_map(
-            fn($key, $value) => "{$depthIntend}{$key}: {$iter($value, $depth + 1)}",
+            fn($key, $value) => "{$depthIndent}{$key}: {$iter($value, $depth + 1)}",
             array_keys($input),
             array_values($input)
         );
 
-        $result = ['{', ...$lines, "{$bracketIntend}}"];
+        $result = ['{', ...$lines, "{$bracketIndent}}"];
         return implode("\n", $result);
     };
 

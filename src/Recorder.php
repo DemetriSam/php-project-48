@@ -34,7 +34,30 @@ function record($tree, $first, $second)
 
                 $records = array_merge($records, $parentRecord);
             }
+
+            if($type === 'nodeFirst') {
+                $childRecords = Records\makeRecordsWithoutCompare($firstValue);
+                $parentRecord = Records\makeParentRecord($childRecords, $key, 'deleted', $path);
+                
+                $singleRecord = Diff\is_key_exists_in_depth($path, $second) ? 
+                                Records\makeSingleRecord($key, $secondValue, 'added') :
+                                [];
+
+                $records = array_merge($records, $parentRecord, $singleRecord);
+            }
             
+            if($type === 'nodeSecond') {
+                
+                $singleRecord = Diff\is_key_exists_in_depth($path, $first) ? 
+                                Records\makeSingleRecord($key, $firstValue, 'deleted') :
+                                [];
+
+                $childRecords = Records\makeRecordsWithoutCompare($secondValue);
+                $parentRecord = Records\makeParentRecord($childRecords, $key, 'added', $path);
+
+                $records = array_merge($records, $singleRecord, $parentRecord);
+            }
+
             return $records;
             
         }, []);

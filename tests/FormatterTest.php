@@ -16,12 +16,12 @@ class FormatterTest extends TestCase
   {
     $this->expectedPlain = <<<E
 {
-    - follow: false
-      host: hexlet.io
-    - proxy: 123.234.53.22
-    - timeout: 50
-    + timeout: 20
-    + verbose: true
+  - follow: false
+    host: hexlet.io
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
 }
 E;
   $this->expectedNested = <<<E
@@ -73,11 +73,7 @@ E;
   }
 
   /**
-   * @covers Gen\Diff\makeStylishString
-   * @covers Gen\Diff\genDiff
-   * @covers Gen\Diff\parseFile
-   * @covers Gen\Diff\parseJson
-   * @covers Gen\Diff\parseYaml
+   * @group plain
    */
   public function testMakeStylishString()
   {
@@ -85,19 +81,19 @@ E;
     $second = parseFile('tests/fixtures/json/file2.json');
 
     $actual = genDiff($first, $second);
-    file_put_contents('records.php', "<?php\n" . $actual);
 
     $this->assertEquals($this->expectedPlain, $actual);
   }
 
+  /**
+   * @group recursive
+   */
   public function testMakeStylishStringRecursive()
   {
     $first = parseFile('tests/fixtures/rec/file1.json');
     $second = parseFile('tests/fixtures/rec/file2.json');
 
     $actual = genDiff($first, $second);  
-    
-    file_put_contents('diffRec.php', "<?php\n" . $actual);
 
     $this->assertEquals($this->expectedNested, $actual);
   }
