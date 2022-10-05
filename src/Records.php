@@ -14,7 +14,6 @@ function makeRecords($diff)
     $old = Diff\getOld($diff);
     $actual = Diff\getActual($diff);
     $diffStatus = Diff\getStatus($diff);
-    $type = 'leaf';
 
     switch ($diffStatus) {
         case 'added':
