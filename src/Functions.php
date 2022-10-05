@@ -9,10 +9,7 @@ function printDiff(string $first, string $second, string $format = 'stylish')
     $first = parseFile($first);
     $second = parseFile($second);
 
-    $diff = genDiff($first, $second);
-
-    ksort($diff);
-    echo makeStylishString($diff);
+    echo genDiff($first, $second);
 }
 
 function genDiff(array $first, array $second)
