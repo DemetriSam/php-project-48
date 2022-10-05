@@ -18,55 +18,16 @@ function makeRecords($diff, $path)
 
     switch ($diffStatus) {
         case 'added':
-            return [
-            [
-                ...compact('key', 'diffStatus', 'path', 'type'),
-                'record' => $actual,
-                'status' => 'actual',
-                'tag' => PLUS,
-
-            ]
-        ];
+            return makeSingleRecord($key, $actual, $diffStatus);
 
         case 'deleted':
-            return [
-            [
-                ...compact('key', 'diffStatus', 'path', 'type'),
-                'record' => $old,
-                'status' => 'old',
-                'tag' => MINUS,
-
-            ]
-        ];
+            return makeSingleRecord($key, $old, $diffStatus);
 
         case 'same':
-            return [
-            [
-                ...compact('key', 'diffStatus', 'path', 'type'),
-                'record' => $actual,
-                'status' => 'actual',
-                'tag' => EMPTY_TAG,
-
-            ]
-        ];
+            return makeSingleRecord($key, $actual, $diffStatus);
 
         case 'changed':
-            return [
-            [
-                ...compact('key', 'diffStatus', 'path', 'type'),
-                'record' => $old,
-                'status' => 'old',
-                'tag' => MINUS,
-
-            ],
-            [
-                ...compact('key', 'diffStatus', 'path', 'type'),
-                'record' => $actual,
-                'status' => 'actual',
-                'tag' => PLUS,
-
-            ],
-        ];
+            return makePairRecord($key, $old, $actual, $diffStatus);
     }
 }
 
@@ -131,6 +92,14 @@ function makeSingleRecord($key, $value, $diffStatus)
     $record = $value;
 
     return [compact('key', 'diffStatus', 'type', 'record', 'tag', 'status')];
+}
+
+function makePairRecord($key, $old, $actual, $diffStatus)
+{
+    $first = makeSingleRecord($key, $old, 'deleted');
+    $second = makeSingleRecord($key, $actual, 'added');
+
+    return array_merge($first, $second);
 }
 
 function getTag($record)
