@@ -15,14 +15,19 @@ function render($records)
                 '[complex value]' :
                 Records\toString(Records\getValue($record));
 
-        $line = ["Property '{$path}' was {$status} with value: {$value}"];
+        if ($status !== 'same') {
+            $line = ($status === 'removed') ? 
+                    ["Property '{$path}' was {$status}"] :
+                    ["Property '{$path}' was {$status} with value: {$value}"];
+        } else {
+            $line = [];
+        }
 
         return array_merge($init, $line);
 
     };
 
     $lines = array_map(fn($record) => reduce($callback, $record, []), $records);
-    var_export($lines);
     return implode("\n", Collection\flatten($lines));
 }
 
