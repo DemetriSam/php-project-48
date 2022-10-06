@@ -8,7 +8,7 @@ const PLUS = '+ ';
 const MINUS = '- ';
 const EMPTY_TAG = '  ';
 
-function makeSingleRecord($key, $value, $diffStatus)
+function makeSingleRecord($key, $value, $diffStatus, $path)
 {
     if ($diffStatus === 'same') {
         $tag = EMPTY_TAG;
@@ -24,13 +24,13 @@ function makeSingleRecord($key, $value, $diffStatus)
     $type = 'leaf';
     $record = $value;
 
-    return [compact('key', 'diffStatus', 'type', 'record', 'tag', 'status')];
+    return [compact('key', 'diffStatus', 'type', 'record', 'tag', 'status', 'path')];
 }
 
-function makePairRecord($key, $old, $actual, $diffStatus)
+function makePairRecord($key, $old, $actual, $diffStatus, $path)
 {
-    $first = makeSingleRecord($key, $old, 'removed');
-    $second = makeSingleRecord($key, $actual, 'added');
+    $first = makeSingleRecord($key, $old, 'removed', $path);
+    $second = makeSingleRecord($key, $actual, 'added', $path);
 
     return array_merge($first, $second);
 }
@@ -41,19 +41,20 @@ function makeRecordsByDiff($diff)
     $old = Diff\getOld($diff);
     $actual = Diff\getActual($diff);
     $diffStatus = Diff\getStatus($diff);
+    $path = Diff\getCurrentPath($diff);
 
     switch ($diffStatus) {
         case 'added':
-            return makeSingleRecord($key, $actual, $diffStatus);
+            return makeSingleRecord($key, $actual, $diffStatus, $path);
 
         case 'removed':
-            return makeSingleRecord($key, $old, $diffStatus);
+            return makeSingleRecord($key, $old, $diffStatus, $path);
 
         case 'same':
-            return makeSingleRecord($key, $actual, $diffStatus);
+            return makeSingleRecord($key, $actual, $diffStatus, $path);
 
         case 'updated':
-            return makePairRecord($key, $old, $actual, $diffStatus);
+            return makePairRecord($key, $old, $actual, $diffStatus, $path);
     }
 }
 
@@ -127,4 +128,9 @@ function getValue($record)
 function getType($record)
 {
     return $record['type'];
+}
+
+function getCurrentPath($record)
+{
+    return $record['path'];
 }

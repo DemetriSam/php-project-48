@@ -6,7 +6,7 @@ function makeDiff($key, $old, $actual, $path, $firstArray, $secondArray)
 {
     $status = compareThePair($old, $actual, $path, $firstArray, $secondArray);
 
-    return compact('key', 'old', 'actual', 'status');
+    return compact('key', 'old', 'actual', 'status', 'path');
 }
 
 function compareThePair($first, $second, $path, $firstArray, $secondArray)
@@ -59,4 +59,9 @@ function getStatus($diff)
 function getKey($diff)
 {
     return $diff['key'];
+}
+
+function getCurrentPath($diff)
+{
+    return $diff['path'];
 }

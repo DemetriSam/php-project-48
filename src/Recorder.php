@@ -40,7 +40,7 @@ function record($tree, $first, $second)
                 $parentRecord = Records\makeParentRecord($childRecords, $key, 'removed', $path);
 
                 $singleRecord = Diff\isKeyExistsInDepth($path, $second) ?
-                                Records\makeSingleRecord($key, $secondValue, 'added') :
+                                Records\makeSingleRecord($key, $secondValue, 'added', $path) :
                                 [];
 
                 $records = array_merge($records, $parentRecord, $singleRecord);
@@ -48,7 +48,7 @@ function record($tree, $first, $second)
 
             if ($type === 'nodeSecond') {
                 $singleRecord = Diff\isKeyExistsInDepth($path, $first) ?
-                                Records\makeSingleRecord($key, $firstValue, 'removed') :
+                                Records\makeSingleRecord($key, $firstValue, 'removed', $path) :
                                 [];
 
                 $childRecords = Records\makeRecordsWithoutCompare($secondValue);
