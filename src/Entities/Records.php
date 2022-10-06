@@ -80,12 +80,12 @@ function makeParentRecord($childRecords, $key, $diffStatus, $path)
     ];
 }
 
-function makeRecordsWithoutCompare($tree)
+function makeRecordsWithoutCompare($tree, $path = [])
 {
     return array_map(
-        function ($key, $value) {
+        function ($key, $value) use ($path) {
             $tag = EMPTY_TAG;
-            $status = 'not_compared';
+            $diffStatus = 'not_compared';
 
             if (!is_array($value)) {
                 $record = $value;
@@ -95,7 +95,7 @@ function makeRecordsWithoutCompare($tree)
                 $type = 'node';
             }
 
-            return compact('key', 'record', 'type', 'tag');
+            return compact('key', 'record', 'type', 'tag', 'path', 'diffStatus');
         },
         array_keys($tree),
         $tree
@@ -133,4 +133,9 @@ function getType($record)
 function getCurrentPath($record)
 {
     return $record['path'];
+}
+
+function getDiffStatus($record)
+{
+    return $record['diffStatus'];
 }
