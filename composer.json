@@ -16,7 +16,8 @@
             "src/Entities/Records.php",
             "src/Recorder.php",
             "src/Formatters/StylishFormatter.php",
-            "src/Formatters/PlainFormatter.php"
+            "src/Formatters/PlainFormatter.php",
+            "src/Formatters/JsonFormatter.php"
         ]
     },
     "authors": [

@@ -71,6 +71,8 @@ E;
 }
 E;
 
+    $this->expectedJson = file_get_contents('tests/fixtures/result.json');
+
     $this->expectedFromPlainFormatter = <<<E
 Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
@@ -120,6 +122,16 @@ E;
     $actual = genDiff($first, $second, 'plain');  
 
     $this->assertEquals($this->expectedFromPlainFormatter, $actual);
+  }
+
+  public function testJsonFormatter()
+  {
+    $first = parseFile('tests/fixtures/rec/file1.json');
+    $second = parseFile('tests/fixtures/rec/file2.json');
+
+    $actual = genDiff($first, $second, 'json');  
+
+    $this->assertEquals($this->expectedJson, $actual);
   }
 
 }

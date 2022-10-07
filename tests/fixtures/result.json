@@ -1,0 +1,380 @@
+[
+    {
+        "key": "common",
+        "tag": "  ",
+        "diffStatus": "same",
+        "path": [
+            "common"
+        ],
+        "isUpdated": false,
+        "type": "node",
+        "record": [
+            {
+                "key": "follow",
+                "diffStatus": "added",
+                "type": "leaf",
+                "record": false,
+                "tag": "+ ",
+                "status": "actual",
+                "path": [
+                    "common",
+                    "follow"
+                ],
+                "isUpdated": false
+            },
+            {
+                "key": "setting1",
+                "diffStatus": "same",
+                "type": "leaf",
+                "record": "Value 1",
+                "tag": "  ",
+                "status": "actual",
+                "path": [
+                    "common",
+                    "setting1"
+                ],
+                "isUpdated": false
+            },
+            {
+                "key": "setting2",
+                "diffStatus": "removed",
+                "type": "leaf",
+                "record": 200,
+                "tag": "- ",
+                "status": "old",
+                "path": [
+                    "common",
+                    "setting2"
+                ],
+                "isUpdated": false
+            },
+            {
+                "key": "setting3",
+                "diffStatus": "removed",
+                "type": "leaf",
+                "record": true,
+                "tag": "- ",
+                "status": "old",
+                "path": [
+                    "common",
+                    "setting3"
+                ],
+                "isUpdated": true
+            },
+            {
+                "key": "setting3",
+                "diffStatus": "added",
+                "type": "leaf",
+                "record": null,
+                "tag": "+ ",
+                "status": "actual",
+                "path": [
+                    "common",
+                    "setting3"
+                ],
+                "isUpdated": true
+            },
+            {
+                "key": "setting4",
+                "diffStatus": "added",
+                "type": "leaf",
+                "record": "blah blah",
+                "tag": "+ ",
+                "status": "actual",
+                "path": [
+                    "common",
+                    "setting4"
+                ],
+                "isUpdated": false
+            },
+            {
+                "key": "setting5",
+                "tag": "+ ",
+                "diffStatus": "added",
+                "path": [
+                    "common",
+                    "setting5"
+                ],
+                "isUpdated": false,
+                "type": "node",
+                "record": [
+                    {
+                        "key": "key5",
+                        "record": "value5",
+                        "type": "leaf",
+                        "tag": "  ",
+                        "path": [
+                            "common",
+                            "setting5"
+                        ],
+                        "diffStatus": "not_compared"
+                    }
+                ]
+            },
+            {
+                "key": "setting6",
+                "tag": "  ",
+                "diffStatus": "same",
+                "path": [
+                    "common",
+                    "setting6"
+                ],
+                "isUpdated": false,
+                "type": "node",
+                "record": [
+                    {
+                        "key": "doge",
+                        "tag": "  ",
+                        "diffStatus": "same",
+                        "path": [
+                            "common",
+                            "setting6",
+                            "doge"
+                        ],
+                        "isUpdated": false,
+                        "type": "node",
+                        "record": [
+                            {
+                                "key": "wow",
+                                "diffStatus": "removed",
+                                "type": "leaf",
+                                "record": "",
+                                "tag": "- ",
+                                "status": "old",
+                                "path": [
+                                    "common",
+                                    "setting6",
+                                    "doge",
+                                    "wow"
+                                ],
+                                "isUpdated": true
+                            },
+                            {
+                                "key": "wow",
+                                "diffStatus": "added",
+                                "type": "leaf",
+                                "record": "so much",
+                                "tag": "+ ",
+                                "status": "actual",
+                                "path": [
+                                    "common",
+                                    "setting6",
+                                    "doge",
+                                    "wow"
+                                ],
+                                "isUpdated": true
+                            }
+                        ]
+                    },
+                    {
+                        "key": "key",
+                        "diffStatus": "same",
+                        "type": "leaf",
+                        "record": "value",
+                        "tag": "  ",
+                        "status": "actual",
+                        "path": [
+                            "common",
+                            "setting6",
+                            "key"
+                        ],
+                        "isUpdated": false
+                    },
+                    {
+                        "key": "ops",
+                        "diffStatus": "added",
+                        "type": "leaf",
+                        "record": "vops",
+                        "tag": "+ ",
+                        "status": "actual",
+                        "path": [
+                            "common",
+                            "setting6",
+                            "ops"
+                        ],
+                        "isUpdated": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "group1",
+        "tag": "  ",
+        "diffStatus": "same",
+        "path": [
+            "group1"
+        ],
+        "isUpdated": false,
+        "type": "node",
+        "record": [
+            {
+                "key": "baz",
+                "diffStatus": "removed",
+                "type": "leaf",
+                "record": "bas",
+                "tag": "- ",
+                "status": "old",
+                "path": [
+                    "group1",
+                    "baz"
+                ],
+                "isUpdated": true
+            },
+            {
+                "key": "baz",
+                "diffStatus": "added",
+                "type": "leaf",
+                "record": "bars",
+                "tag": "+ ",
+                "status": "actual",
+                "path": [
+                    "group1",
+                    "baz"
+                ],
+                "isUpdated": true
+            },
+            {
+                "key": "foo",
+                "diffStatus": "same",
+                "type": "leaf",
+                "record": "bar",
+                "tag": "  ",
+                "status": "actual",
+                "path": [
+                    "group1",
+                    "foo"
+                ],
+                "isUpdated": false
+            },
+            {
+                "key": "nest",
+                "tag": "- ",
+                "diffStatus": "removed",
+                "path": [
+                    "group1",
+                    "nest"
+                ],
+                "isUpdated": true,
+                "type": "node",
+                "record": [
+                    {
+                        "key": "key",
+                        "record": "value",
+                        "type": "leaf",
+                        "tag": "  ",
+                        "path": [
+                            "group1",
+                            "nest"
+                        ],
+                        "diffStatus": "not_compared"
+                    }
+                ]
+            },
+            {
+                "key": "nest",
+                "diffStatus": "added",
+                "type": "leaf",
+                "record": "str",
+                "tag": "+ ",
+                "status": "actual",
+                "path": [
+                    "group1",
+                    "nest"
+                ],
+                "isUpdated": true
+            }
+        ]
+    },
+    {
+        "key": "group2",
+        "tag": "- ",
+        "diffStatus": "removed",
+        "path": [
+            "group2"
+        ],
+        "isUpdated": false,
+        "type": "node",
+        "record": [
+            {
+                "key": "abc",
+                "record": 12345,
+                "type": "leaf",
+                "tag": "  ",
+                "path": [
+                    "group2"
+                ],
+                "diffStatus": "not_compared"
+            },
+            {
+                "key": "deep",
+                "record": [
+                    {
+                        "key": "id",
+                        "record": 45,
+                        "type": "leaf",
+                        "tag": "  ",
+                        "path": [],
+                        "diffStatus": "not_compared"
+                    }
+                ],
+                "type": "node",
+                "tag": "  ",
+                "path": [
+                    "group2"
+                ],
+                "diffStatus": "not_compared"
+            }
+        ]
+    },
+    {
+        "key": "group3",
+        "tag": "+ ",
+        "diffStatus": "added",
+        "path": [
+            "group3"
+        ],
+        "isUpdated": false,
+        "type": "node",
+        "record": [
+            {
+                "key": "deep",
+                "record": [
+                    {
+                        "key": "id",
+                        "record": [
+                            {
+                                "key": "number",
+                                "record": 45,
+                                "type": "leaf",
+                                "tag": "  ",
+                                "path": [],
+                                "diffStatus": "not_compared"
+                            }
+                        ],
+                        "type": "node",
+                        "tag": "  ",
+                        "path": [],
+                        "diffStatus": "not_compared"
+                    }
+                ],
+                "type": "node",
+                "tag": "  ",
+                "path": [
+                    "group3"
+                ],
+                "diffStatus": "not_compared"
+            },
+            {
+                "key": "fee",
+                "record": 100500,
+                "type": "leaf",
+                "tag": "  ",
+                "path": [
+                    "group3"
+                ],
+                "diffStatus": "not_compared"
+            }
+        ]
+    }
+]
