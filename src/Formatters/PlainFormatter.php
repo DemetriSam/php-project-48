@@ -1,9 +1,9 @@
 <?php
 
-namespace Gen\Diff\PlainFormatter;
+namespace Differ\Differ\PlainFormatter;
 
 use Funct\Collection;
-use Gen\Diff\Records;
+use Differ\Differ\Records;
 
 function render($records)
 {

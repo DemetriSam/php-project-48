@@ -1,6 +1,6 @@
 <?php
 
-namespace Gen\Diff;
+namespace Differ\Differ;
 
 use Funct\Collection;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Gen\Diff\Diff;
+namespace Differ\Differ\Diff;
 
 function makeDiff($key, $old, $actual, $path, $firstArray, $secondArray)
 {

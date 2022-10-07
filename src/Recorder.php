@@ -1,10 +1,10 @@
 <?php
 
-namespace Gen\Diff;
+namespace Differ\Differ;
 
 use Funct\Collection;
-use Gen\Diff\Diff;
-use Gen\Diff\Records;
+use Differ\Differ\Diff;
+use Differ\Differ\Records;
 
 function record($tree, $first, $second)
 {

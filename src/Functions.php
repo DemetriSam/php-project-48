@@ -1,6 +1,6 @@
 <?php
 
-namespace Gen\Diff;
+namespace Differ\Differ;
 
 function printDiff(string $first, string $second, string $formatName)
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Gen\Diff\StylishFormatter;
+namespace Differ\Differ\StylishFormatter;
 
-use Gen\Diff\Records;
+use Differ\Differ\Records;
 
 function render($input, $replacer = ' ', $spacesCount = 4)
 {

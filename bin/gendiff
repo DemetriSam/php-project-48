@@ -3,7 +3,7 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use function Gen\Diff\printDiff;
+use function Differ\Differ\printDiff;
 
 function getMan() {
     return <<<DOC

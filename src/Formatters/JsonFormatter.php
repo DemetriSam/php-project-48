@@ -1,8 +1,8 @@
 <?php
 
-namespace Gen\Diff\JsonFormatter;
+namespace Differ\Differ\JsonFormatter;
 
-use Gen\Diff\Records;
+use Differ\Differ\Records;
 
 function render($records)
 {

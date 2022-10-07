@@ -3,10 +3,10 @@
 namespace Php\Package\Tests;
 
 use PHPUnit\Framework\TestCase;
-use function Gen\Diff\genDiff;
-use function Gen\Diff\parseFile;
-use function Gen\Diff\makeStylishString;
-use function Gen\Diff\stringify;
+use function Differ\Differ\genDiff;
+use function Differ\Differ\parseFile;
+use function Differ\Differ\makeStylishString;
+use function Differ\Differ\stringify;
 
 class FormatterTest extends TestCase
 {

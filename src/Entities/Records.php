@@ -1,8 +1,8 @@
 <?php
 
-namespace Gen\Diff\Records;
+namespace Differ\Differ\Records;
 
-use Gen\Diff\Diff;
+use Differ\Differ\Diff;
 
 const PLUS = '+ ';
 const MINUS = '- ';

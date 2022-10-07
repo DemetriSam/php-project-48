@@ -1,12 +1,12 @@
 <?php
 
-namespace Gen\Diff;
+namespace Differ\Differ;
 
 use Funct\Collection;
-use Gen\Diff\Records;
-use Gen\Diff\StylishFormatter;
-use Gen\Diff\PlainFormatter;
-use Gen\Diff\JsonFormatter;
+use Differ\Differ\Records;
+use Differ\Differ\StylishFormatter;
+use Differ\Differ\PlainFormatter;
+use Differ\Differ\JsonFormatter;
 
 function render($records, $formatName)
 {
