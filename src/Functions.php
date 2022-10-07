@@ -2,15 +2,19 @@
 
 namespace Differ\Differ;
 
-function printDiff(string $first, string $second, string $formatName)
+function genDiff(string $first, string $second, string $formatName = 'stylish')
 {
     $first = parseFile($first);
     $second = parseFile($second);
 
-    echo genDiff($first, $second, $formatName);
+    $diff = prepareDiff($first, $second, $formatName);
+    
+    echo $diff;
+
+    return $diff;
 }
 
-function genDiff(array $first, array $second, $formatName = 'stylish')
+function prepareDiff(array $first, array $second, $formatName)
 {
     $keysCommonTree = buildKeysCommonTree($first, $second);
     $records = record($keysCommonTree, $first, $second);

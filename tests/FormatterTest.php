@@ -89,25 +89,12 @@ E;
   }
 
   /**
-   * @group plain
-   */
-  public function testMakeStylishString()
-  {
-    $first = parseFile('tests/fixtures/json/file1.json');
-    $second = parseFile('tests/fixtures/json/file2.json');
-
-    $actual = genDiff($first, $second);
-
-    $this->assertEquals($this->expectedPlain, $actual);
-  }
-
-  /**
    * @group recursive
    */
   public function testMakeStylishStringRecursive()
   {
-    $first = parseFile('tests/fixtures/rec/file1.json');
-    $second = parseFile('tests/fixtures/rec/file2.json');
+    $first = 'tests/fixtures/rec/file1.json';
+    $second = 'tests/fixtures/rec/file2.json';
 
     $actual = genDiff($first, $second);  
 
@@ -116,8 +103,8 @@ E;
 
   public function testPlainFormatter()
   {
-    $first = parseFile('tests/fixtures/rec/file1.json');
-    $second = parseFile('tests/fixtures/rec/file2.json');
+    $first = 'tests/fixtures/rec/file1.json';
+    $second = 'tests/fixtures/rec/file2.json';
 
     $actual = genDiff($first, $second, 'plain');  
 
@@ -126,8 +113,8 @@ E;
 
   public function testJsonFormatter()
   {
-    $first = parseFile('tests/fixtures/rec/file1.json');
-    $second = parseFile('tests/fixtures/rec/file2.json');
+    $first = 'tests/fixtures/rec/file1.json';
+    $second = 'tests/fixtures/rec/file2.json';
 
     $actual = genDiff($first, $second, 'json');  
 
