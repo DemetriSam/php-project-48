@@ -8,13 +8,13 @@ use Gen\Diff\Records;
 function render($records)
 {
 
-    $callback = function($init, $record) {
+    $callback = function ($init, $record) {
 
-        if(Records\getDiffStatus($record) === 'not_compared') {
+        if (Records\getDiffStatus($record) === 'not_compared') {
             return $init;
         }
-        
-        if(Records\isUpdated($record)) {
+
+        if (Records\isUpdated($record)) {
             return array_merge($init, [$record]);
         }
 
@@ -25,7 +25,7 @@ function render($records)
                 Records\toString(Records\getValue($record), false);
 
         if ($status !== 'same') {
-            $line = ($status === 'removed') ? 
+            $line = ($status === 'removed') ?
                     ["Property '{$path}' was {$status}"] :
                     ["Property '{$path}' was {$status} with value: {$value}"];
         } else {
@@ -33,7 +33,6 @@ function render($records)
         }
 
         return array_merge($init, $line);
-
     };
 
     $lines_raw = Collection\flatten(array_map(fn($record) => reduce($callback, $record, []), $records));
@@ -42,14 +41,14 @@ function render($records)
     $updated_records = array_filter($lines_raw, fn($item) => is_array($item));
     $groupedByPath = Collection\groupBy($updated_records, fn($record) => implode('.', Records\getCurrentPath($record)));
 
-    $updated_lines = array_map(function($key, $item) {
+    $updated_lines = array_map(function ($key, $item) {
         $path = $key;
         $norm = array_values($item);
-        $old = is_array(Records\getValue($norm[0])) ? 
-            '[complex value]' :        
+        $old = is_array(Records\getValue($norm[0])) ?
+            '[complex value]' :
             Records\toString(Records\getValue($norm[0]), false);
-        $actual = is_array(Records\getValue($norm[1])) ? 
-                '[complex value]' :        
+        $actual = is_array(Records\getValue($norm[1])) ?
+                '[complex value]' :
                 Records\toString(Records\getValue($norm[1]), false);
 
         return "Property '{$path}' was updated. From {$old} to {$actual}";

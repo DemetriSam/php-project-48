@@ -36,10 +36,9 @@ function record($tree, $first, $second)
             }
 
             if ($type === 'nodeFirst') {
-
                 $childRecords = Records\makeRecordsWithoutCompare($firstValue, $path);
-                
-                if(Diff\isKeyExistsInDepth($path, $second)) {
+
+                if (Diff\isKeyExistsInDepth($path, $second)) {
                     $parentRecord = Records\makeParentRecord($childRecords, $key, 'removed', $path, true);
                     $singleRecord = Records\makeSingleRecord($key, $secondValue, 'added', $path, true);
                 } else {
@@ -51,10 +50,9 @@ function record($tree, $first, $second)
             }
 
             if ($type === 'nodeSecond') {
-                
                 $childRecords = Records\makeRecordsWithoutCompare($secondValue, $path);
-                
-                if(Diff\isKeyExistsInDepth($path, $first)) {
+
+                if (Diff\isKeyExistsInDepth($path, $first)) {
                     $parentRecord = Records\makeParentRecord($childRecords, $key, 'added', $path, true);
                     $singleRecord = Records\makeSingleRecord($key, $firstValue, 'removed', $path, true);
                 } else {
