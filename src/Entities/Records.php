@@ -8,7 +8,7 @@ const PLUS = '+ ';
 const MINUS = '- ';
 const EMPTY_TAG = '  ';
 
-function makeSingleRecord($key, $value, $diffStatus, $path)
+function makeSingleRecord($key, $value, $diffStatus, $path, $isUpdated = false)
 {
     if ($diffStatus === 'same') {
         $tag = EMPTY_TAG;
@@ -24,13 +24,13 @@ function makeSingleRecord($key, $value, $diffStatus, $path)
     $type = 'leaf';
     $record = $value;
 
-    return [compact('key', 'diffStatus', 'type', 'record', 'tag', 'status', 'path')];
+    return [compact('key', 'diffStatus', 'type', 'record', 'tag', 'status', 'path', 'isUpdated')];
 }
 
 function makePairRecord($key, $old, $actual, $diffStatus, $path)
 {
-    $first = makeSingleRecord($key, $old, 'removed', $path);
-    $second = makeSingleRecord($key, $actual, 'added', $path);
+    $first = makeSingleRecord($key, $old, 'removed', $path, true);
+    $second = makeSingleRecord($key, $actual, 'added', $path, true);
 
     return array_merge($first, $second);
 }
@@ -58,7 +58,7 @@ function makeRecordsByDiff($diff)
     }
 }
 
-function makeParentRecord($childRecords, $key, $diffStatus, $path)
+function makeParentRecord($childRecords, $key, $diffStatus, $path, $isUpdated = false)
 {
     if ($diffStatus === 'same') {
         $tag = EMPTY_TAG;
@@ -73,7 +73,7 @@ function makeParentRecord($childRecords, $key, $diffStatus, $path)
 
     return [
         [
-            ...compact('key', 'tag', 'diffStatus', 'path'),
+            ...compact('key', 'tag', 'diffStatus', 'path', 'isUpdated'),
             'type' => 'node',
             'record' => $childRecords,
         ]
@@ -102,11 +102,11 @@ function makeRecordsWithoutCompare($tree, $path = [])
     );
 }
 
-function toString($input)
+function toString($input, $trim = true)
 {
     $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
 
-    return trim($exported, "'");
+    return $trim ? trim($exported, "'") : $exported;
 }
 
 function getTag($record)
@@ -138,4 +138,9 @@ function getCurrentPath($record)
 function getDiffStatus($record)
 {
     return $record['diffStatus'];
+}
+
+function isUpdated($record)
+{
+    return $record['isUpdated'];
 }

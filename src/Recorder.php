@@ -36,23 +36,31 @@ function record($tree, $first, $second)
             }
 
             if ($type === 'nodeFirst') {
-                $childRecords = Records\makeRecordsWithoutCompare($firstValue, $path);
-                $parentRecord = Records\makeParentRecord($childRecords, $key, 'removed', $path);
 
-                $singleRecord = Diff\isKeyExistsInDepth($path, $second) ?
-                                Records\makeSingleRecord($key, $secondValue, 'added', $path) :
-                                [];
+                $childRecords = Records\makeRecordsWithoutCompare($firstValue, $path);
+                
+                if(Diff\isKeyExistsInDepth($path, $second)) {
+                    $parentRecord = Records\makeParentRecord($childRecords, $key, 'removed', $path, true);
+                    $singleRecord = Records\makeSingleRecord($key, $secondValue, 'added', $path, true);
+                } else {
+                    $parentRecord = Records\makeParentRecord($childRecords, $key, 'removed', $path, false);
+                    $singleRecord = [];
+                }
 
                 $records = array_merge($records, $parentRecord, $singleRecord);
             }
 
             if ($type === 'nodeSecond') {
-                $singleRecord = Diff\isKeyExistsInDepth($path, $first) ?
-                                Records\makeSingleRecord($key, $firstValue, 'removed', $path) :
-                                [];
-
+                
                 $childRecords = Records\makeRecordsWithoutCompare($secondValue, $path);
-                $parentRecord = Records\makeParentRecord($childRecords, $key, 'added', $path);
+                
+                if(Diff\isKeyExistsInDepth($path, $first)) {
+                    $parentRecord = Records\makeParentRecord($childRecords, $key, 'added', $path, true);
+                    $singleRecord = Records\makeSingleRecord($key, $firstValue, 'removed', $path, true);
+                } else {
+                    $parentRecord = Records\makeParentRecord($childRecords, $key, 'added', $path, false);
+                    $singleRecord = [];
+                }
 
                 $records = array_merge($records, $singleRecord, $parentRecord);
             }
