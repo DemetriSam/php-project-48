@@ -63,8 +63,9 @@ function reduce($callback, $tree, $init)
 {
 
     $value = Records\getValue($tree);
+    $type = Records\getType($tree);
 
-    if (!is_array($value)) {
+    if ($type === 'leaf') {
         return $callback($init, $tree);
     }
 
