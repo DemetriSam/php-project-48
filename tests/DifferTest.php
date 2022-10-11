@@ -47,9 +47,9 @@ class DifferTest extends TestCase
         $this->assertStringEqualsFile($pathToResult, genDiff($filepath1, $filepath2, 'stylish'));
     }
 
-    /*
+    /**
      * @dataProvider formatProvider
-     
+     */
     public function testPlain($format)
     {
         $filepath1 = getFixtureFullPath("file1.{$format}");
@@ -58,7 +58,7 @@ class DifferTest extends TestCase
         $pathToResult = getFixtureFullPath('diff.plain');
         $this->assertStringEqualsFile($pathToResult, genDiff($filepath1, $filepath2, 'plain'));
     }
-    */
+
     /**
      * @dataProvider formatProvider
      */
