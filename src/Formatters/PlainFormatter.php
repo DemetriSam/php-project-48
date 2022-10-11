@@ -4,7 +4,7 @@ namespace Differ\Differ\PlainFormatter;
 
 use Differ\Differ;
 
-function render($tree)
+function render(array $tree)
 {
     $callback = function ($init, $node, $path) {
 
@@ -13,7 +13,6 @@ function render($tree)
         $currentPath = implode('.', array_merge($path, [$key]));
 
         if ($type === 'changed') {
-            $key = Differ\getKey($node);
             [$value1, $value2] = Differ\getValue($node);
 
             $renderedValue1 = is_array($value1) ? '[complex value]' : Differ\toString($value1, false);
@@ -26,12 +25,10 @@ function render($tree)
         }
 
         if ($type === 'deleted') {
-            $key = Differ\getKey($node);
             return array_merge($init, ["Property '{$currentPath}' was removed"]);
         }
 
         if ($type === 'added') {
-            $key = Differ\getKey($node);
             $value = Differ\getValue($node);
             $renderedValue = is_array($value) ? '[complex value]' : Differ\toString($value, false);
 
@@ -45,7 +42,7 @@ function render($tree)
     return implode("\n", $lines);
 }
 
-function reduce($callback, $tree, $init, $path = [])
+function reduce(callable $callback, array $tree, array $init, $path = [])
 {
     $type = Differ\getType($tree);
     $key = Differ\getKey($tree);
@@ -62,7 +59,7 @@ function reduce($callback, $tree, $init, $path = [])
                 $acc,
                 array_filter(
                     array_merge($path, [$key]),
-                    fn($item) => !empty($item)
+                    fn($item) => $item !== null
                 )
             ),
             $recursiveAcc

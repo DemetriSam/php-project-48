@@ -2,17 +2,17 @@
 
 namespace Differ\Differ;
 
-function genDiff(string $first, string $second, string $formatName = 'stylish')
+function genDiff(string $path1, string $path2, string $formatName = 'stylish')
 {
-    $first = parseFile($first);
-    $second = parseFile($second);
+    $first = parseFile($path1);
+    $second = parseFile($path2);
 
     $diff = prepareDiff($first, $second, $formatName);
 
     return $diff;
 }
 
-function prepareDiff(array $first, array $second, $formatName)
+function prepareDiff(array $first, array $second, string $formatName)
 {
     $diffTree = buildDiffTree($first, $second);
     return render($diffTree, $formatName);

@@ -8,7 +8,7 @@ const PLUS = '+ ';
 const MINUS = '- ';
 const EMPTY_TAG = '  ';
 
-function render($node, $replacer = ' ', $spacesCount = 4)
+function render(array $node, string $replacer = ' ', int $spacesCount = 4)
 {
     $indent = str_repeat($replacer, $spacesCount);
 
@@ -54,7 +54,7 @@ function render($node, $replacer = ' ', $spacesCount = 4)
         if (Differ\getType($node) === 'root') {
             $children = Differ\getChildren($node);
             $lines = array_map(
-                function ($node) use ($itemIndent, $iter, $depth) {
+                function ($node) use ($iter, $depth) {
                     return$iter($node, $depth);
                 },
                 $children
@@ -70,7 +70,7 @@ function render($node, $replacer = ' ', $spacesCount = 4)
             $tag = EMPTY_TAG;
 
             $lines = array_map(
-                function ($node) use ($itemIndent, $iter, $depth) {
+                function ($node) use ($iter, $depth) {
                     return$iter($node, $depth + 1);
                 },
                 $children
@@ -86,7 +86,7 @@ function render($node, $replacer = ' ', $spacesCount = 4)
     return $iter($node, 0);
 }
 
-function stringify($data, $startDepth = 0, $replacer = ' ', $spacesCount = 4)
+function stringify(mixed $data, int $startDepth = 0, string $replacer = ' ', int $spacesCount = 4)
 {
     $intend = str_repeat($replacer, $spacesCount);
 
@@ -111,7 +111,7 @@ function stringify($data, $startDepth = 0, $replacer = ' ', $spacesCount = 4)
     return $iter($data, $startDepth);
 }
 
-function getTag($node)
+function getTag(array $node)
 {
     $tags = [
         'added' => PLUS,

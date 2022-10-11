@@ -6,7 +6,7 @@ use Differ\Differ\StylishFormatter;
 use Differ\Differ\PlainFormatter;
 use Differ\Differ\JsonFormatter;
 
-function render($records, $formatName)
+function render(array $records, string $formatName)
 {
     switch ($formatName) {
         case 'stylish':
@@ -23,7 +23,7 @@ function render($records, $formatName)
     }
 }
 
-function toString($input, $trim = true)
+function toString(mixed $input, bool $trim = true)
 {
     $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
 

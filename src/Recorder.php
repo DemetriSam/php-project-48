@@ -4,7 +4,7 @@ namespace Differ\Differ;
 
 use Functional;
 
-function buildDiff($first, $second)
+function buildDiff(array $first, array $second)
 {
     $keys = array_unique(
         array_merge(
@@ -44,7 +44,7 @@ function buildDiff($first, $second)
             ];
         }
 
-        if (array_key_exists($key, $first) && array_key_exists($key, $second)) {
+        if (array_key_exists($key, (array)$first) && array_key_exists($key, (array)$second)) {
             if ($value1 === $value2) {
                 return [
                     'key' => $key,
@@ -63,7 +63,7 @@ function buildDiff($first, $second)
     }, $sortedKeys);
 }
 
-function buildDiffTree($first, $second): array
+function buildDiffTree(array $first, array $second): array
 {
     return [
         'type' => 'root',
@@ -71,22 +71,22 @@ function buildDiffTree($first, $second): array
     ];
 }
 
-function getType($node)
+function getType(array $node)
 {
     return $node['type'];
 }
 
-function getChildren($node)
+function getChildren(array $node)
 {
     return $node['children'];
 }
 
-function getKey($node)
+function getKey(array $node)
 {
     return (getType($node) !== 'root') ? $node['key'] : null;
 }
 
-function getValue($node)
+function getValue(array $node)
 {
     if (getType($node) === 'deleted' || getType($node) === 'added' || getType($node) === 'unchanged') {
         return $node['value'];

@@ -4,7 +4,7 @@ namespace Differ\Differ;
 
 use Symfony\Component\Yaml\Yaml;
 
-function parseFile($filePath): array
+function parseFile(string $filePath): array
 {
     $array = explode('.', $filePath);
     $reversed = array_reverse($array);
@@ -27,12 +27,12 @@ function parseFile($filePath): array
     }
 }
 
-function parseJson($filePath, $content)
+function parseJson(string $filePath, string $content)
 {
     return (array) json_decode($content, true);
 }
 
-function parseYaml($filePath, $content)
+function parseYaml(string $filePath, string $content)
 {
     return (array) Yaml::parse($content);
 }
