@@ -14,7 +14,7 @@ function render($node, $replacer = ' ', $spacesCount = 4)
     $indent = str_repeat($replacer, $spacesCount);
 
     $iter = function ($node, $depth) use (&$iter, $indent) {
-        
+
         $startIndent = '  ';
         $depthIndent = str_repeat($indent, $depth);
 
@@ -22,34 +22,38 @@ function render($node, $replacer = ' ', $spacesCount = 4)
         $bracketIndent = "{$startIndent}{$startIndent}{$depthIndent}";
 
 
-        if(Differ\getType($node) === 'changed') {
+        if (Differ\getType($node) === 'changed') {
             $key = Differ\getKey($node);
             $tag1 = MINUS;
             $tag2 = PLUS;
-            
+
             [$value1, $value2] = Differ\getValue($node);
-            
+
             $renderedValue1 = stringify($value1, $depth + 1);
             $renderedValue2 = stringify($value2, $depth + 1);
-            
+
             $first = rtrim("{$itemIndent}{$tag1}{$key}: {$renderedValue1}");
             $second = rtrim("{$itemIndent}{$tag2}{$key}: {$renderedValue2}");
 
             return implode("\n", [$first, $second]);
         }
 
-        if(Differ\getType($node) === 'deleted' || Differ\getType($node) === 'added' || Differ\getType($node) === 'unchanged') {
+        if (
+            Differ\getType($node) === 'deleted' ||
+            Differ\getType($node) === 'added' ||
+            Differ\getType($node) === 'unchanged'
+        ) {
             $tag = getTag($node);
             $key = Differ\getKey($node);
             $value = Differ\getValue($node);
-            
+
             $renderedValue = stringify($value, $depth + 1);
-            
+
             return rtrim("{$itemIndent}{$tag}{$key}: {$renderedValue}");
         }
 
-        if(Differ\getType($node) === 'root') {
-            $children = Differ\getChildren($node); 
+        if (Differ\getType($node) === 'root') {
+            $children = Differ\getChildren($node);
             $lines = array_map(
                 function ($node) use ($itemIndent, $iter, $depth) {
                     $result = $iter($node, $depth);
@@ -62,16 +66,16 @@ function render($node, $replacer = ' ', $spacesCount = 4)
             return implode("\n", $result);
         }
 
-        if(Differ\getType($node) === 'nested') {
+        if (Differ\getType($node) === 'nested') {
             $key = Differ\getKey($node);
             $children = Differ\getChildren($node);
             $tag = EMPTY_TAG;
 
-            $lines = array_map( 
-                function($node) use ($itemIndent, $iter, $depth) {
+            $lines = array_map(
+                function ($node) use ($itemIndent, $iter, $depth) {
                     $result = $iter($node, $depth + 1);
                     return rtrim($result);
-                }, 
+                },
                 $children
             );
 
@@ -80,7 +84,6 @@ function render($node, $replacer = ' ', $spacesCount = 4)
         }
 
         throw new \Exception("Unknown or not existed state");
-        
     };
 
     return $iter($node, 0);
@@ -92,7 +95,7 @@ function stringify($data, $startDepth = 0, $replacer = ' ', $spacesCount = 4)
 
     $iter = function ($data, $depth) use (&$iter, $intend) {
         if (!is_array($data)) {
-            return toString($data);
+            return Differ\toString($data);
         }
 
         $depthIntend = str_repeat($intend, $depth + 1);
@@ -111,14 +114,8 @@ function stringify($data, $startDepth = 0, $replacer = ' ', $spacesCount = 4)
     return $iter($data, $startDepth);
 }
 
-function toString($input, $trim = true)
+function getTag($node)
 {
-    $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
-
-    return $trim ? trim($exported, "'") : $exported;
-}
-
-function getTag($node) {
     $tags = [
         'added' => PLUS,
         'deleted' => MINUS,

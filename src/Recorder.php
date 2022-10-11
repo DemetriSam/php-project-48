@@ -84,12 +84,12 @@ function buildDiff($first, $second)
 
     $sortedKeys = Functional\sort($keys, fn ($left, $right) => strcmp($left, $right));
 
-    return array_map(function($key) use ($first, $second) {
-        
+    return array_map(function ($key) use ($first, $second) {
+
         $value1 = $first[$key] ?? null;
         $value2 = $second[$key] ?? null;
 
-        if(!array_key_exists($key, $first)) {
+        if (!array_key_exists($key, $first)) {
             return [
                 'key' => $key,
                 'type' => 'added',
@@ -97,8 +97,7 @@ function buildDiff($first, $second)
             ];
         }
 
-        if(!array_key_exists($key, $second)) {
-            
+        if (!array_key_exists($key, $second)) {
             return [
                 'key' => $key,
                 'type' => 'deleted',
@@ -115,8 +114,7 @@ function buildDiff($first, $second)
         }
 
         if (array_key_exists($key, $first) && array_key_exists($key, $second)) {
-            
-            if($value1 === $value2) {
+            if ($value1 === $value2) {
                 return [
                     'key' => $key,
                     'type' => 'unchanged',
@@ -131,7 +129,6 @@ function buildDiff($first, $second)
                 'value2' => $value2,
             ];
         }
-
     }, $sortedKeys);
 }
 
@@ -155,16 +152,16 @@ function getChildren($node)
 
 function getKey($node)
 {
-    return $node['key'];
+    return (getType($node) !== 'root') ? $node['key'] : null;
 }
 
 function getValue($node)
 {
-    if(getType($node) === 'deleted' || getType($node) === 'added' || getType($node) === 'unchanged') {
+    if (getType($node) === 'deleted' || getType($node) === 'added' || getType($node) === 'unchanged') {
         return $node['value'];
     }
 
-    if(getType($node) === 'changed') {
+    if (getType($node) === 'changed') {
         $value1 = $node['value1'];
         $value2 = $node['value2'];
 
@@ -174,5 +171,4 @@ function getValue($node)
     $type = getType($node);
     $key = ($type === 'root') ? 'root' : getKey($node);
     throw new \Exception("Node '$key' of '$type' type has not value field");
-
 }

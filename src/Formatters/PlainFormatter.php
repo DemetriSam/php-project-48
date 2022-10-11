@@ -3,80 +3,72 @@
 namespace Differ\Differ\PlainFormatter;
 
 use Funct\Collection;
-use Differ\Differ\Records;
+use Differ\Differ;
 
-function render($records)
+function render($tree)
 {
+    $callback = function ($init, $node, $path) {
 
-    $callback = function ($init, $record) {
+        $type = Differ\getType($node);
+        $key = Differ\getKey($node);
+        $currentPath = implode('.', array_merge($path, [$key]));
 
-        if (Records\getDiffStatus($record) === 'not_compared') {
-            return $init;
+        if ($type === 'changed') {
+            $key = Differ\getKey($node);
+            [$value1, $value2] = Differ\getValue($node);
+
+            $renderedValue1 = is_array($value1) ? '[complex value]' : Differ\toString($value1, false);
+            $renderedValue2 = is_array($value2) ? '[complex value]' : Differ\toString($value2, false);
+
+            return array_merge(
+                $init,
+                ["Property '{$currentPath}' was updated. From {$renderedValue1} to {$renderedValue2}"]
+            );
         }
 
-        if (Records\isUpdated($record)) {
-            return array_merge($init, [$record]);
+        if ($type === 'deleted') {
+            $key = Differ\getKey($node);
+            return array_merge($init, ["Property '{$currentPath}' was removed"]);
         }
 
-        $path = implode('.', Records\getCurrentPath($record));
-        $status = Records\getDiffStatus($record);
-        $value = is_array(Records\getValue($record)) ?
-                '[complex value]' :
-                Records\toString(Records\getValue($record), false);
+        if ($type === 'added') {
+            $key = Differ\getKey($node);
+            $value = Differ\getValue($node);
+            $renderedValue = is_array($value) ? '[complex value]' : Differ\toString($value, false);
 
-        if ($status !== 'same') {
-            $line = ($status === 'removed') ?
-                    ["Property '{$path}' was {$status}"] :
-                    ["Property '{$path}' was {$status} with value: {$value}"];
-        } else {
-            $line = [];
+            return array_merge($init, ["Property '{$currentPath}' was added with value: {$renderedValue}"]);
         }
 
-        return array_merge($init, $line);
+        return $init;
     };
 
-    $lines_raw = Collection\flatten(array_map(fn($record) => reduce($callback, $record, []), $records));
-
-    $lines_without_updated = array_filter($lines_raw, fn($item) => !is_array($item));
-    $updated_records = array_filter($lines_raw, fn($item) => is_array($item));
-    $groupedByPath = Collection\groupBy($updated_records, fn($record) => implode('.', Records\getCurrentPath($record)));
-
-    $updated_lines = array_map(function ($key, $item) {
-        $path = $key;
-        $norm = array_values($item);
-        $old = is_array(Records\getValue($norm[0])) ?
-            '[complex value]' :
-            Records\toString(Records\getValue($norm[0]), false);
-        $actual = is_array(Records\getValue($norm[1])) ?
-                '[complex value]' :
-                Records\toString(Records\getValue($norm[1]), false);
-
-        return "Property '{$path}' was updated. From {$old} to {$actual}";
-    }, array_keys($groupedByPath), $groupedByPath);
-
-    $lines = array_merge($lines_without_updated, $updated_lines);
-    sort($lines);
+    $lines = reduce($callback, $tree, []);
     return implode("\n", $lines);
 }
 
-function reduce($callback, $tree, $init)
+function reduce($callback, $tree, $init, $path = [])
 {
+    $type = Differ\getType($tree);
+    $key = Differ\getKey($tree);
 
-    $value = Records\getValue($tree);
-    $type = Records\getType($tree);
+    if ($type === 'nested' or $type === 'root') {
+        $recursiveAcc = $callback($init, $tree, $path);
+        $children = Differ\getChildren($tree);
 
-    if ($type === 'leaf') {
-        return $callback($init, $tree);
+        return array_reduce(
+            $children,
+            fn($acc, $child) => reduce(
+                $callback,
+                $child,
+                $acc,
+                array_filter(
+                    array_merge($path, [$key]),
+                    fn($item) => !empty($item)
+                )
+            ),
+            $recursiveAcc
+        );
     }
 
-    $recursiveAcc = $callback($init, $tree);
-
-    $children = $value;
-    $recursiveAcc = array_reduce(
-        $children,
-        fn($acc, $child) => reduce($callback, $child, $acc),
-        $recursiveAcc
-    );
-
-    return $recursiveAcc;
+    return $callback($init, $tree, $path);
 }

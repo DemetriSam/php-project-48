@@ -24,3 +24,10 @@ function render($records, $formatName)
             throw new \Exception("The '$formatName' format is unknown");
     }
 }
+
+function toString($input, $trim = true)
+{
+    $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
+
+    return $trim ? trim($exported, "'") : $exported;
+}
