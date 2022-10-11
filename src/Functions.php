@@ -8,7 +8,7 @@ function genDiff(string $first, string $second, string $formatName = 'stylish')
     $second = parseFile($second);
 
     $diff = prepareDiff($first, $second, $formatName);
-    
+
     return $diff;
 }
 
