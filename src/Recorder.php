@@ -4,8 +4,6 @@ namespace Differ\Differ;
 
 use Funct\Collection;
 use Functional;
-use Differ\Differ\Diff;
-use Differ\Differ\Records;
 
 function record($tree, $first, $second)
 {

@@ -2,7 +2,6 @@
 
 namespace Differ\Differ\StylishFormatter;
 
-use Differ\Differ\Records;
 use Differ\Differ;
 
 const PLUS = '+ ';
