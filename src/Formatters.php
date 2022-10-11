@@ -2,7 +2,6 @@
 
 namespace Differ\Differ;
 
-use Funct\Collection;
 use Differ\Differ\StylishFormatter;
 use Differ\Differ\PlainFormatter;
 use Differ\Differ\JsonFormatter;

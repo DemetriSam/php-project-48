@@ -2,7 +2,6 @@
 
 namespace Differ\Differ\PlainFormatter;
 
-use Funct\Collection;
 use Differ\Differ;
 
 function render($tree)
