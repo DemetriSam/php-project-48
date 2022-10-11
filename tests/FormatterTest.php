@@ -80,7 +80,7 @@ class FormatterTest extends TestCase
 }
 E;
 
-    $this->expectedJson = json_encode(json_decode(file_get_contents('tests/fixtures/diff.json'), true), JSON_PRETTY_PRINT);
+    $this->expectedJson = file_get_contents('tests/fixtures/diff.json');
 
     $this->expectedFromPlainFormatter = file_get_contents('tests/fixtures/diff.plain');
   }
