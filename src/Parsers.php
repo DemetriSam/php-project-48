@@ -10,27 +10,29 @@ function parseFile($filePath): array
     $reversed = array_reverse($array);
     $extension = $reversed[0];
 
+    $content = file_get_contents($filePath);
+
     switch ($extension) {
         case 'json':
-            return parseJson($filePath);
+            return parseJson($filePath, $content);
 
         case 'yaml':
-            return parseYaml($filePath);
+            return parseYaml($filePath, $content);
 
         case 'yml':
-            return parseYaml($filePath);
+            return parseYaml($filePath, $content);
 
         default:
             throw new \Exception("Format $extension is not supported!");
     }
 }
 
-function parseJson($filePath)
+function parseJson($filePath, $content)
 {
-    return (array) json_decode(file_get_contents($filePath), true);
+    return (array) json_decode($content, true);
 }
 
-function parseYaml($filePath)
+function parseYaml($filePath, $content)
 {
-    return (array) Yaml::parse(file_get_contents($filePath), Yaml::PARSE_OBJECT_FOR_MAP);
+    return (array) Yaml::parse($content);
 }
