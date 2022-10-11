@@ -52,7 +52,7 @@
       + isNested: none
       + key: false
         nest: {
-          - bar:
+          - bar: 
           + bar: 0
           - isNested: true
         }

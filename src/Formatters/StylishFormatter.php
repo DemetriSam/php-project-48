@@ -31,8 +31,8 @@ function render($node, $replacer = ' ', $spacesCount = 4)
             $renderedValue1 = stringify($value1, $depth + 1);
             $renderedValue2 = stringify($value2, $depth + 1);
 
-            $first = rtrim("{$itemIndent}{$tag1}{$key}: {$renderedValue1}");
-            $second = rtrim("{$itemIndent}{$tag2}{$key}: {$renderedValue2}");
+            $first = "{$itemIndent}{$tag1}{$key}: {$renderedValue1}";
+            $second = "{$itemIndent}{$tag2}{$key}: {$renderedValue2}";
 
             return implode("\n", [$first, $second]);
         }
