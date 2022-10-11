@@ -48,7 +48,7 @@ function render($node, $replacer = ' ', $spacesCount = 4)
 
             $renderedValue = stringify($value, $depth + 1);
 
-            return rtrim("{$itemIndent}{$tag}{$key}: {$renderedValue}");
+            return "{$itemIndent}{$tag}{$key}: {$renderedValue}";
         }
 
         if (Differ\getType($node) === 'root') {
