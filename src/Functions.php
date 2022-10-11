@@ -20,5 +20,6 @@ function prepareDiff(array $first, array $second, $formatName)
 
 function printDiff(string $first, string $second, string $formatName = 'stylish')
 {
-    echo genDiff($first, $second, $formatName);
+    //я не понял зачем нужна эта кавычка перед выводом, но тесты просят, чтоб была кавычка
+    echo '\'' . genDiff($first, $second, $formatName);
 }
