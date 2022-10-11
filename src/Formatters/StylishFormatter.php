@@ -55,8 +55,7 @@ function render($node, $replacer = ' ', $spacesCount = 4)
             $children = Differ\getChildren($node);
             $lines = array_map(
                 function ($node) use ($itemIndent, $iter, $depth) {
-                    $result = $iter($node, $depth);
-                    return rtrim($result);
+                    return$iter($node, $depth);
                 },
                 $children
             );
@@ -72,8 +71,7 @@ function render($node, $replacer = ' ', $spacesCount = 4)
 
             $lines = array_map(
                 function ($node) use ($itemIndent, $iter, $depth) {
-                    $result = $iter($node, $depth + 1);
-                    return rtrim($result);
+                    return$iter($node, $depth + 1);
                 },
                 $children
             );
