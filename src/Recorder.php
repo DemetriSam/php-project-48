@@ -157,3 +157,22 @@ function getKey($node)
 {
     return $node['key'];
 }
+
+function getValue($node)
+{
+    if(getType($node) === 'deleted' || getType($node) === 'added' || getType($node) === 'unchanged') {
+        return $node['value'];
+    }
+
+    if(getType($node) === 'changed') {
+        $value1 = $node['value1'];
+        $value2 = $node['value2'];
+
+        return [$value1, $value2];
+    }
+
+    $type = getType($node);
+    $key = ($type === 'root') ? 'root' : getKey($node);
+    throw new \Exception("Node '$key' of '$type' type has not value field");
+
+}

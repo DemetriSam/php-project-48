@@ -19,36 +19,46 @@ function render($node, $replacer = ' ', $spacesCount = 4)
         $depthIndent = str_repeat($indent, $depth);
 
         $itemIndent = "{$startIndent}{$depthIndent}";
-        $bracketIndent = str_repeat($indent, $depth);
+        $bracketIndent = "{$startIndent}{$startIndent}{$depthIndent}";
 
 
         if(Differ\getType($node) === 'changed') {
-            return;
+            $key = Differ\getKey($node);
+            $tag1 = MINUS;
+            $tag2 = PLUS;
+            
+            [$value1, $value2] = Differ\getValue($node);
+            
+            $renderedValue1 = stringify($value1, $depth + 1);
+            $renderedValue2 = stringify($value2, $depth + 1);
+            
+            $first = rtrim("{$itemIndent}{$tag1}{$key}: {$renderedValue1}");
+            $second = rtrim("{$itemIndent}{$tag2}{$key}: {$renderedValue2}");
+
+            return implode("\n", [$first, $second]);
         }
 
-        if(Differ\getType($node) === 'deleted') {
-            return;
+        if(Differ\getType($node) === 'deleted' || Differ\getType($node) === 'added' || Differ\getType($node) === 'unchanged') {
+            $tag = getTag($node);
+            $key = Differ\getKey($node);
+            $value = Differ\getValue($node);
+            
+            $renderedValue = stringify($value, $depth + 1);
+            
+            return rtrim("{$itemIndent}{$tag}{$key}: {$renderedValue}");
         }
-
-        if(Differ\getType($node) === 'added') {
-            return;
-        }
-
-        if(Differ\getType($node) === 'unchanged') {
-            return;
-        }     
 
         if(Differ\getType($node) === 'root') {
             $children = Differ\getChildren($node); 
             $lines = array_map(
                 function ($node) use ($itemIndent, $iter, $depth) {
-                    $result = $iter($node, $depth + 1);
+                    $result = $iter($node, $depth);
                     return rtrim($result);
                 },
                 $children
             );
 
-            $result = ['{', ...$lines, "{$bracketIndent}}"];
+            $result = ['{', ...$lines, "{$depthIndent}}"];
             return implode("\n", $result);
         }
 
@@ -98,7 +108,7 @@ function stringify($data, $startDepth = 0, $replacer = ' ', $spacesCount = 4)
         return implode("\n", $result);
     };
 
-    return $iter($input, $startDepth);
+    return $iter($data, $startDepth);
 }
 
 function toString($input, $trim = true)
@@ -106,4 +116,14 @@ function toString($input, $trim = true)
     $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
 
     return $trim ? trim($exported, "'") : $exported;
+}
+
+function getTag($node) {
+    $tags = [
+        'added' => PLUS,
+        'deleted' => MINUS,
+        'unchanged' => EMPTY_TAG,
+    ];
+
+    return($tags[Differ\getType($node)]);
 }
