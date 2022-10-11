@@ -30,18 +30,3 @@ function buildKeysCommonTree(array $first, array $second = [])
         $mergedKeys
     );
 }
-
-function getType($node)
-{
-    return $node['type'];
-}
-
-function getKey($node)
-{
-    return $node['key'];
-}
-
-function getChildren($node)
-{
-    return $node['children'];
-}

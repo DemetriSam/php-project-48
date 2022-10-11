@@ -71,7 +71,7 @@ E;
 }
 E;
 
-    $this->expectedJson = file_get_contents('tests/fixtures/result.json');
+    $this->expectedJson = json_encode(json_decode(file_get_contents('tests/fixtures/diff.json'), true), JSON_PRETTY_PRINT);
 
     $this->expectedFromPlainFormatter = <<<E
 Property 'common.follow' was added with value: false
@@ -93,8 +93,8 @@ E;
    */
   public function testMakeStylishStringRecursive()
   {
-    $first = 'tests/fixtures/rec/file1.json';
-    $second = 'tests/fixtures/rec/file2.json';
+    $first = 'tests/fixtures/file1.json';
+    $second = 'tests/fixtures/file2.json';
 
     $actual = genDiff($first, $second);  
 
@@ -103,8 +103,8 @@ E;
 
   public function testPlainFormatter()
   {
-    $first = 'tests/fixtures/rec/file1.json';
-    $second = 'tests/fixtures/rec/file2.json';
+    $first = 'tests/fixtures/file1.json';
+    $second = 'tests/fixtures/file2.json';
 
     $actual = genDiff($first, $second, 'plain');  
 
@@ -113,8 +113,8 @@ E;
 
   public function testJsonFormatter()
   {
-    $first = 'tests/fixtures/rec/file1.json';
-    $second = 'tests/fixtures/rec/file2.json';
+    $first = 'tests/fixtures/file1.json';
+    $second = 'tests/fixtures/file2.json';
 
     $actual = genDiff($first, $second, 'json');  
 

@@ -8,15 +8,16 @@ function genDiff(string $first, string $second, string $formatName = 'stylish')
     $second = parseFile($second);
 
     $diff = prepareDiff($first, $second, $formatName);
-
+    if ($formatName === 'stylish') {
+        file_put_contents('output.php', "<?php\n" . var_export($diff, true));
+    }
     return $diff;
 }
 
 function prepareDiff(array $first, array $second, $formatName)
 {
-    $keysCommonTree = buildKeysCommonTree($first, $second);
-    $records = record($keysCommonTree, $first, $second);
-    return render($records, $formatName);
+    $diffTree = buildDiffTree($first, $second);
+    return render($diffTree, $formatName);
 }
 
 function printDiff(string $first, string $second, string $formatName = 'stylish')
