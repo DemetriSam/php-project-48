@@ -10,7 +10,7 @@ function parseFile(string $filePath): array
     $reversed = array_reverse($array);
     $extension = $reversed[0];
 
-    $content = file_get_contents($filePath) ?? '';
+    $content = fileGetContents($filePath);
 
     switch ($extension) {
         case 'json':
@@ -35,4 +35,15 @@ function parseJson(string $filePath, string $content)
 function parseYaml(string $filePath, string $content)
 {
     return (array) Yaml::parse($content);
+}
+
+function fileGetContents($filePath): string
+{
+    $raw_content = file_get_contents($filePath);
+
+    if (is_string($raw_content)) {
+        return $raw_content;
+    } else {
+        return '';
+    }
 }

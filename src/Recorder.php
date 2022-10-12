@@ -44,6 +44,7 @@ function buildDiff(array $first, array $second)
             ];
         }
 
+        /** @phpstan-ignore-next-line */
         if (array_key_exists($key, $first) && array_key_exists($key, $second)) {
             if ($value1 === $value2) {
                 return [
