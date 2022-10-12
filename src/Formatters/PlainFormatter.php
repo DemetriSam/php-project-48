@@ -42,7 +42,7 @@ function render(array $tree)
     return implode("\n", $lines);
 }
 
-function reduce(callable $callback, array $tree, array $init, $path = [])
+function reduce(callable $callback, array $tree, array $init, array $path = [])
 {
     $type = Differ\getType($tree);
     $key = Differ\getKey($tree);

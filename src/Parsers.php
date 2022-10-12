@@ -10,7 +10,7 @@ function parseFile(string $filePath): array
     $reversed = array_reverse($array);
     $extension = $reversed[0];
 
-    $content = file_get_contents($filePath);
+    $content = file_get_contents($filePath) ?? '';
 
     switch ($extension) {
         case 'json':

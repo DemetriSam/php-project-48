@@ -44,7 +44,7 @@ function buildDiff(array $first, array $second)
             ];
         }
 
-        if (array_key_exists($key, (array)$first) && array_key_exists($key, (array)$second)) {
+        if (array_key_exists($key, $first) && array_key_exists($key, $second)) {
             if ($value1 === $value2) {
                 return [
                     'key' => $key,
