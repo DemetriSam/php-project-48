@@ -37,7 +37,7 @@ function parseYaml(string $filePath, string $content)
     return (array) Yaml::parse($content);
 }
 
-function fileGetContents($filePath): string
+function fileGetContents(string $filePath): string
 {
     $raw_content = file_get_contents($filePath);
 
