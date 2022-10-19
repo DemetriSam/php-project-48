@@ -88,7 +88,7 @@ function render(array $node, string $replacer = ' ', int $spacesCount = 4)
 
 function stringify(mixed $data, int $startDepth = 0, string $replacer = ' ', int $spacesCount = 4)
 {
-    $intend = str_repeat($replacer, $spacesCount);
+    $intend = makeIntend($replacer, $spacesCount);
 
     $iter = function ($data, $depth) use (&$iter, $intend) {
         if (!is_array($data)) {
@@ -120,4 +120,9 @@ function getTag(array $node)
     ];
 
     return($tags[Differ\getType($node)]);
+}
+
+function makeIntend(string $replacer, int $spacesCount)
+{
+    return str_repeat($replacer, $spacesCount);
 }
