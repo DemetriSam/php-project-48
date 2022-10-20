@@ -20,67 +20,65 @@ function render(array $node, string $replacer = ' ', int $spacesCount = 4)
         $itemIndent = "{$startIndent}{$depthIndent}";
         $bracketIndent = "{$startIndent}{$startIndent}{$depthIndent}";
 
+        $type = Differ\getType($node);
 
-        if (Differ\getType($node) === 'changed') {
-            $key = Differ\getKey($node);
-            $tag1 = MINUS;
-            $tag2 = PLUS;
+        switch ($type) {
+            case 'root':
+                $children = Differ\getChildren($node);
+                $lines = array_map(
+                    function ($node) use ($iter, $depth) {
+                        return$iter($node, $depth);
+                    },
+                    $children
+                );
 
-            [$value1, $value2] = Differ\getValue($node);
+                $result = ['{', ...$lines, "{$depthIndent}}"];
+                return implode("\n", $result);
 
-            $renderedValue1 = stringify($value1, $depth + 1);
-            $renderedValue2 = stringify($value2, $depth + 1);
+            case 'nested':
+                $key = Differ\getKey($node);
+                $children = Differ\getChildren($node);
+                $tag = EMPTY_TAG;
 
-            $first = "{$itemIndent}{$tag1}{$key}: {$renderedValue1}";
-            $second = "{$itemIndent}{$tag2}{$key}: {$renderedValue2}";
+                $lines = array_map(
+                    function ($node) use ($iter, $depth) {
+                        return$iter($node, $depth + 1);
+                    },
+                    $children
+                );
 
-            return implode("\n", [$first, $second]);
+                $result = ["{$itemIndent}{$tag}{$key}: {", ...$lines, "{$bracketIndent}}"];
+                return implode("\n", $result);
+
+            case 'changed':
+                $key = Differ\getKey($node);
+                $tag1 = MINUS;
+                $tag2 = PLUS;
+
+                [$value1, $value2] = Differ\getValue($node);
+
+                $renderedValue1 = stringify($value1, $depth + 1);
+                $renderedValue2 = stringify($value2, $depth + 1);
+
+                $first = "{$itemIndent}{$tag1}{$key}: {$renderedValue1}";
+                $second = "{$itemIndent}{$tag2}{$key}: {$renderedValue2}";
+
+                return implode("\n", [$first, $second]);
+
+            case 'deleted':
+            case 'added':
+            case 'unchanged':
+                $tag = getTag($node);
+                $key = Differ\getKey($node);
+                $value = Differ\getValue($node);
+
+                $renderedValue = stringify($value, $depth + 1);
+
+                return "{$itemIndent}{$tag}{$key}: {$renderedValue}";
+
+            default:
+                throw new \Exception("Unknown or not existed state");
         }
-
-        if (
-            Differ\getType($node) === 'deleted' ||
-            Differ\getType($node) === 'added' ||
-            Differ\getType($node) === 'unchanged'
-        ) {
-            $tag = getTag($node);
-            $key = Differ\getKey($node);
-            $value = Differ\getValue($node);
-
-            $renderedValue = stringify($value, $depth + 1);
-
-            return "{$itemIndent}{$tag}{$key}: {$renderedValue}";
-        }
-
-        if (Differ\getType($node) === 'root') {
-            $children = Differ\getChildren($node);
-            $lines = array_map(
-                function ($node) use ($iter, $depth) {
-                    return$iter($node, $depth);
-                },
-                $children
-            );
-
-            $result = ['{', ...$lines, "{$depthIndent}}"];
-            return implode("\n", $result);
-        }
-
-        if (Differ\getType($node) === 'nested') {
-            $key = Differ\getKey($node);
-            $children = Differ\getChildren($node);
-            $tag = EMPTY_TAG;
-
-            $lines = array_map(
-                function ($node) use ($iter, $depth) {
-                    return$iter($node, $depth + 1);
-                },
-                $children
-            );
-
-            $result = ["{$itemIndent}{$tag}{$key}: {", ...$lines, "{$bracketIndent}}"];
-            return implode("\n", $result);
-        }
-
-        throw new \Exception("Unknown or not existed state");
     };
 
     return $iter($node, 0);
