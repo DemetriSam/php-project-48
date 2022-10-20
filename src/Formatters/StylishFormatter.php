@@ -7,18 +7,14 @@ use Differ\Differ;
 const PLUS = '+ ';
 const MINUS = '- ';
 const EMPTY_TAG = '  ';
+const LENGTH_OF_TAGS = 2;
 
-function render(array $node, string $replacer = ' ', int $spacesCount = 4)
+function render(array $node)
 {
-    $indent = str_repeat($replacer, $spacesCount);
+    $iter = function ($node, $depth) use (&$iter) {
 
-    $iter = function ($node, $depth) use (&$iter, $indent) {
-
-        $startIndent = '  ';
-        $depthIndent = str_repeat($indent, $depth);
-
-        $itemIndent = "{$startIndent}{$depthIndent}";
-        $bracketIndent = "{$startIndent}{$startIndent}{$depthIndent}";
+        $itemIndent = buildIndent($depth, LENGTH_OF_TAGS);
+        $bracketIndent = buildIndent($depth);
 
         $type = Differ\getType($node);
 
@@ -27,12 +23,12 @@ function render(array $node, string $replacer = ' ', int $spacesCount = 4)
                 $children = Differ\getChildren($node);
                 $lines = array_map(
                     function ($node) use ($iter, $depth) {
-                        return$iter($node, $depth);
+                        return $iter($node, $depth);
                     },
                     $children
                 );
 
-                $result = ['{', ...$lines, "{$depthIndent}}"];
+                $result = ['{', ...$lines, '}'];
                 return implode("\n", $result);
 
             case 'nested':
@@ -42,7 +38,7 @@ function render(array $node, string $replacer = ' ', int $spacesCount = 4)
 
                 $lines = array_map(
                     function ($node) use ($iter, $depth) {
-                        return$iter($node, $depth + 1);
+                        return $iter($node, $depth + 1);
                     },
                     $children
                 );
@@ -84,25 +80,24 @@ function render(array $node, string $replacer = ' ', int $spacesCount = 4)
     return $iter($node, 0);
 }
 
-function stringify(mixed $data, int $startDepth = 0, string $replacer = ' ', int $spacesCount = 4)
+function stringify(mixed $data, int $startDepth = 0)
 {
-    $intend = makeIntend($replacer, $spacesCount);
 
-    $iter = function ($data, $depth) use (&$iter, $intend) {
+    $iter = function ($data, $depth) use (&$iter) {
         if (!is_array($data)) {
             return Differ\toString($data);
         }
 
-        $depthIntend = str_repeat($intend, $depth + 1);
-        $bracketIntend = str_repeat($intend, $depth);
+        $itemIndent = buildIndent($depth);
+        $bracketIndent = buildIndent($depth - 1);
 
         $lines = array_map(
-            fn($key, $value) => "{$depthIntend}{$key}: {$iter($value, $depth + 1)}",
+            fn($key, $value) => "{$itemIndent}{$key}: {$iter($value, $depth + 1)}",
             array_keys($data),
             array_values($data)
         );
 
-        $result = ['{', ...$lines, "{$bracketIntend}}"];
+        $result = ['{', ...$lines, "{$bracketIndent}}"];
         return implode("\n", $result);
     };
 
@@ -120,7 +115,8 @@ function getTag(array $node)
     return($tags[Differ\getType($node)]);
 }
 
-function makeIntend(string $replacer, int $spacesCount)
+function buildIndent(int $depthOfNode, int $length_of_tag = 0, string $replacer = ' ', int $spaceCount = 4)
 {
-    return str_repeat($replacer, $spacesCount);
+    $depthOfElement = $depthOfNode + 1;
+    return str_repeat($replacer, $spaceCount * $depthOfElement - $length_of_tag);
 }
