@@ -17,7 +17,7 @@ function parseData(string $data, string $format): array
             return parseYaml($data);
 
         default:
-            throw new \Exception("Format $extension is not supported!");
+            throw new \Exception("Format $format is not supported!");
     }
 }
 
