@@ -89,18 +89,25 @@ function getKey(array $node)
 
 function getValue(array $node)
 {
-    if (getType($node) === 'deleted' || getType($node) === 'added' || getType($node) === 'unchanged') {
-        return $node['value'];
-    }
-
-    if (getType($node) === 'changed') {
-        $value1 = $node['value1'];
-        $value2 = $node['value2'];
-
-        return [$value1, $value2];
-    }
-
     $type = getType($node);
-    $key = ($type === 'root') ? 'root' : getKey($node);
-    throw new \Exception("Node '$key' of '$type' type has not value field");
+
+    switch ($type) {
+        case 'deleted':
+        case 'added':
+        case 'unchanged':
+            return $node['value'];
+
+        case 'changed':
+            $value1 = $node['value1'];
+            $value2 = $node['value2'];
+
+            return [$value1, $value2];
+
+        case 'root':
+        case 'nested':
+            throw new \Exception("A node of the '$type' type has not value field");
+
+        default:
+            throw new \Exception("The '$type' type is not supported");
+    }
 }
