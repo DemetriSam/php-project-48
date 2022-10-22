@@ -6,65 +6,100 @@ use Differ\Differ;
 
 function render(array $tree)
 {
-    $callback = function ($init, $node, $path) {
+    $basket = [];
+    $lines = reduce(putStringInBasket(), $tree, $basket);
+    return implode("\n", $lines);
+}
+
+/**
+ * Функция reduce аналог array_reduce, только для дерева
+ */
+function reduce(callable $putStringInBasket, array $tree, array $init, array $path = [])
+{
+    $type = Differ\getType($tree);
+    $key = Differ\getKey($tree);
+
+    switch ($type) {
+        case 'root':
+        case 'nested':
+            $recursiveAcc = $putStringInBasket($init, $tree, $path);
+            $children = Differ\getChildren($tree);
+
+            return array_reduce(
+                $children,
+                fn($acc, $child) => reduce(
+                    $putStringInBasket,
+                    $child,
+                    $acc,
+                    array_filter(
+                        array_merge($path, [$key]),
+                        fn($item) => $item !== null
+                    )
+                ),
+                $recursiveAcc
+            );
+
+        case 'changed':
+        case 'deleted':
+        case 'added':
+        case 'unchanged':
+            return $putStringInBasket($init, $tree, $path);
+        default:
+            throw new \Exception("Unknown or not existed state");
+    }
+}
+
+/**
+ * Возвращает callback для reduce
+ */
+function putStringInBasket()
+{
+    return function ($init, $node, $path) {
 
         $type = Differ\getType($node);
         $key = Differ\getKey($node);
         $currentPath = implode('.', array_merge($path, [$key]));
 
-        if ($type === 'changed') {
-            [$value1, $value2] = Differ\getValue($node);
+        switch ($type) {//кладем в корзинку к reduce строку, сформированную на основе данных и состояния ноды
+            case 'changed':
+                [$value1, $value2] = Differ\getValue($node);
 
-            $renderedValue1 = is_array($value1) ? '[complex value]' : Differ\toString($value1, false);
-            $renderedValue2 = is_array($value2) ? '[complex value]' : Differ\toString($value2, false);
+                $renderedValue1 = stringify($value1);
+                $renderedValue2 = stringify($value2);
 
-            return array_merge(
-                $init,
-                ["Property '{$currentPath}' was updated. From {$renderedValue1} to {$renderedValue2}"]
-            );
+                return array_merge(
+                    $init,
+                    ["Property '{$currentPath}' was updated. From {$renderedValue1} to {$renderedValue2}"]
+                );
+
+            case 'deleted':
+                return array_merge(
+                    $init,
+                    ["Property '{$currentPath}' was removed"]
+                );
+
+            case 'added':
+                $value = Differ\getValue($node);
+                $renderedValue = stringify($value);
+
+                return array_merge(
+                    $init,
+                    ["Property '{$currentPath}' was added with value: {$renderedValue}"]
+                );
+
+            case 'root':
+            case 'nested':
+            case 'unchanged':
+                return $init;
+                //для тех состояний, которые не должны попадать в вывод, не кладем в корзинку ничего
+
+            default:
+                throw new \Exception("Unknown or not existed state");
         }
-
-        if ($type === 'deleted') {
-            return array_merge($init, ["Property '{$currentPath}' was removed"]);
-        }
-
-        if ($type === 'added') {
-            $value = Differ\getValue($node);
-            $renderedValue = is_array($value) ? '[complex value]' : Differ\toString($value, false);
-
-            return array_merge($init, ["Property '{$currentPath}' was added with value: {$renderedValue}"]);
-        }
-
-        return $init;
     };
-
-    $lines = reduce($callback, $tree, []);
-    return implode("\n", $lines);
 }
 
-function reduce(callable $callback, array $tree, array $init, array $path = [])
+function stringify($value)
 {
-    $type = Differ\getType($tree);
-    $key = Differ\getKey($tree);
-
-    if ($type === 'nested' or $type === 'root') {
-        $recursiveAcc = $callback($init, $tree, $path);
-        $children = Differ\getChildren($tree);
-
-        return array_reduce(
-            $children,
-            fn($acc, $child) => reduce(
-                $callback,
-                $child,
-                $acc,
-                array_filter(
-                    array_merge($path, [$key]),
-                    fn($item) => $item !== null
-                )
-            ),
-            $recursiveAcc
-        );
-    }
-
-    return $callback($init, $tree, $path);
+    return is_array($value) ? '[complex value]' : Differ\toString($value, false);
 }

@@ -11,8 +11,6 @@ function parseData(string $data, string $format): array
             return parseJson($data);
 
         case 'yaml':
-            return parseYaml($data);
-
         case 'yml':
             return parseYaml($data);
 

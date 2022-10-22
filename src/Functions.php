@@ -26,8 +26,7 @@ function printDiff(string $first, string $second, string $formatName = 'stylish'
 function getDataFromFile(string $filePath)
 {
     $array = explode('.', $filePath);
-    $reversed = array_reverse($array);
-    $extension = $reversed[0];
+    $extension = end($array);
 
     $data = file_get_contents($filePath);
 

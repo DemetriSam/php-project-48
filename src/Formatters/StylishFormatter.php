@@ -48,7 +48,7 @@ function render(array $node)
 
             case 'changed':
                 $key = Differ\getKey($node);
-                
+
                 [$tag1, $tag2] = $tag;
                 [$value1, $value2] = Differ\getValue($node);
 
