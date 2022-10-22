@@ -17,6 +17,7 @@ function render(array $node)
         $bracketIndent = buildIndent($depth);
 
         $type = Differ\getType($node);
+        $tag = getTag($node);
 
         switch ($type) {
             case 'root':
@@ -34,7 +35,6 @@ function render(array $node)
             case 'nested':
                 $key = Differ\getKey($node);
                 $children = Differ\getChildren($node);
-                $tag = EMPTY_TAG;
 
                 $lines = array_map(
                     function ($node) use ($iter, $depth) {
@@ -48,9 +48,8 @@ function render(array $node)
 
             case 'changed':
                 $key = Differ\getKey($node);
-                $tag1 = MINUS;
-                $tag2 = PLUS;
-
+                
+                [$tag1, $tag2] = $tag;
                 [$value1, $value2] = Differ\getValue($node);
 
                 $renderedValue1 = stringify($value1, $depth + 1);
@@ -64,7 +63,6 @@ function render(array $node)
             case 'deleted':
             case 'added':
             case 'unchanged':
-                $tag = getTag($node);
                 $key = Differ\getKey($node);
                 $value = Differ\getValue($node);
 
@@ -110,6 +108,9 @@ function getTag(array $node)
         'added' => PLUS,
         'deleted' => MINUS,
         'unchanged' => EMPTY_TAG,
+        'nested' => EMPTY_TAG,
+        'changed' => [MINUS, PLUS],
+        'root' => 'no tag',
     ];
 
     return($tags[Differ\getType($node)]);
