@@ -61,7 +61,7 @@ function collectLines(array $node, array $lines = [], array $path = [])
     }
 }
 
-function putKeyToPath($path, $key)
+function putKeyToPath(array $path, string|null $key)
 {
     return array_filter(
         array_merge($path, [$key]),
@@ -69,7 +69,7 @@ function putKeyToPath($path, $key)
     );
 }
 
-function stringify($value)
+function stringify(mixed $value)
 {
     return is_array($value) ? '[complex value]' : Differ\toString($value, false);
 }
