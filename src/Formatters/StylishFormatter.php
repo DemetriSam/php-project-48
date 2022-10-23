@@ -116,8 +116,8 @@ function getTag(array $node)
     return($tags[Differ\getType($node)]);
 }
 
-function buildIndent(int $depthOfNode, int $length_of_tag = 0, string $replacer = ' ', int $spaceCount = 4)
+function buildIndent(int $depthOfNode, int $lengthOfTag = 0, string $replacer = ' ', int $spaceCount = 4)
 {
     $depthOfElement = $depthOfNode + 1;
-    return str_repeat($replacer, $spaceCount * $depthOfElement - $length_of_tag);
+    return str_repeat($replacer, $spaceCount * $depthOfElement - $lengthOfTag);
 }
