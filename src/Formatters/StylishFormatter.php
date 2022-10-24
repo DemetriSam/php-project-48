@@ -4,6 +4,8 @@ namespace Differ\Differ\StylishFormatter;
 
 use Differ\Differ;
 
+use function Functional\pick;
+
 const PLUS = '+ ';
 const MINUS = '- ';
 const EMPTY_TAG = '  ';
@@ -16,12 +18,12 @@ function render(array $node)
         $itemIndent = buildIndent($depth, LENGTH_OF_TAGS);
         $bracketIndent = buildIndent($depth);
 
-        $type = Differ\getType($node);
+        $type = pick($node, 'type');
         $tag = getTag($node);
 
         switch ($type) {
             case 'root':
-                $children = Differ\getChildren($node);
+                $children = pick($node, 'children');
                 $lines = array_map(
                     function ($node) use ($iter, $depth) {
                         return $iter($node, $depth);
@@ -33,8 +35,8 @@ function render(array $node)
                 return implode("\n", $result);
 
             case 'nested':
-                $key = Differ\getKey($node);
-                $children = Differ\getChildren($node);
+                $key = pick($node, 'key');
+                $children = pick($node, 'children');
 
                 $lines = array_map(
                     function ($node) use ($iter, $depth) {
@@ -47,13 +49,12 @@ function render(array $node)
                 return implode("\n", $result);
 
             case 'changed':
-                $key = Differ\getKey($node);
+                $key = pick($node, 'key');
 
                 [$tag1, $tag2] = $tag;
-                [$value1, $value2] = Differ\getValue($node);
 
-                $renderedValue1 = stringify($value1, $depth + 1);
-                $renderedValue2 = stringify($value2, $depth + 1);
+                $renderedValue1 = stringify(pick($node, 'value1'), $depth + 1);
+                $renderedValue2 = stringify(pick($node, 'value2'), $depth + 1);
 
                 $first = "{$itemIndent}{$tag1}{$key}: {$renderedValue1}";
                 $second = "{$itemIndent}{$tag2}{$key}: {$renderedValue2}";
@@ -63,8 +64,8 @@ function render(array $node)
             case 'deleted':
             case 'added':
             case 'unchanged':
-                $key = Differ\getKey($node);
-                $value = Differ\getValue($node);
+                $key = pick($node, 'key');
+                $value = pick($node, 'value');
 
                 $renderedValue = stringify($value, $depth + 1);
 
@@ -113,7 +114,7 @@ function getTag(array $node)
         'root' => 'no tag',
     ];
 
-    return($tags[Differ\getType($node)]);
+    return($tags[pick($node, 'type')]);
 }
 
 function buildIndent(int $depthOfNode, int $lengthOfTag = 0, string $replacer = ' ', int $spaceCount = 4)

@@ -4,6 +4,8 @@ namespace Differ\Differ\PlainFormatter;
 
 use Differ\Differ;
 
+use function Functional\pick;
+
 function render(array $tree)
 {
     $lines = collectLines($tree);
@@ -12,14 +14,14 @@ function render(array $tree)
 
 function collectLines(array $node, array $lines = [], array $path = [])
 {
-    $type = Differ\getType($node);
-    $key = Differ\getKey($node);
+    $type = pick($node, 'type');
+    $key = pick($node, 'key');
     $currentPath = implode('.', putKeyToPath($path, $key));
 
     switch ($type) {
         case 'root':
         case 'nested':
-            $children = Differ\getChildren($node);
+            $children = pick($node, 'children');
             return array_reduce(
                 $children,
                 fn($lines, $child) => collectLines(
@@ -31,9 +33,8 @@ function collectLines(array $node, array $lines = [], array $path = [])
             );
 
         case 'changed':
-            [$value1, $value2] = Differ\getValue($node);
-            $renderedValue1 = stringify($value1);
-            $renderedValue2 = stringify($value2);
+            $renderedValue1 = stringify(pick($node, 'value1'));
+            $renderedValue2 = stringify(pick($node, 'value2'));
             return array_merge(
                 $lines,
                 ["Property '{$currentPath}' was updated. From {$renderedValue1} to {$renderedValue2}"]
@@ -46,7 +47,7 @@ function collectLines(array $node, array $lines = [], array $path = [])
             );
 
         case 'added':
-            $value = Differ\getValue($node);
+            $value = pick($node, 'value');
             $renderedValue = stringify($value);
             return array_merge(
                 $lines,
