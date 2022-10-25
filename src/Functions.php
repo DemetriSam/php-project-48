@@ -5,7 +5,7 @@ namespace Differ\Differ;
 function genDiff(string $path1, string $path2, string $formatName = 'stylish')
 {
     $first = parseData(...[getDataFromFile($path1), getFileType($path1)]);
-    $second = parseData(...[getDataFromFile($path2), getFileType($path1)]);
+    $second = parseData(...[getDataFromFile($path2), getFileType($path2)]);
 
     $diff = prepareDiff($first, $second, $formatName);
 
