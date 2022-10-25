@@ -4,8 +4,8 @@ namespace Differ\Differ;
 
 function genDiff(string $path1, string $path2, string $formatName = 'stylish')
 {
-    $first = parseData(...getDataFromFile($path1));
-    $second = parseData(...getDataFromFile($path2));
+    $first = parseData(...[getDataFromFile($path1), getFileType($path1)]);
+    $second = parseData(...[getDataFromFile($path2), getFileType($path1)]);
 
     $diff = prepareDiff($first, $second, $formatName);
 
@@ -23,16 +23,18 @@ function printDiff(string $first, string $second, string $formatName = 'stylish'
     echo genDiff($first, $second, $formatName);
 }
 
-function getDataFromFile(string $filePath)
+function getDataFromFile(string $filePath): string
 {
-    $array = explode('.', $filePath);
-    $extension = end($array);
-
     $data = file_get_contents($filePath);
 
     if (!is_string($data)) {
-        return ['', $extension];
+        return '';
     }
 
-    return [$data, $extension];
+    return $data;
+}
+
+function getFileType(string $pathToFile): string
+{
+    return pathinfo($pathToFile, PATHINFO_EXTENSION);
 }
