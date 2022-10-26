@@ -11,7 +11,7 @@ const MINUS = '- ';
 const EMPTY_TAG = '  ';
 const LENGTH_OF_TAGS = 2;
 
-function render(array $node)
+function render(array $node): string
 {
     $iter = function ($node, $depth) use (&$iter) {
 
@@ -79,7 +79,7 @@ function render(array $node)
     return $iter($node, 0);
 }
 
-function stringify(mixed $data, int $startDepth = 0)
+function stringify(mixed $data, int $startDepth = 0): string
 {
 
     $iter = function ($data, $depth) use (&$iter) {
@@ -103,7 +103,7 @@ function stringify(mixed $data, int $startDepth = 0)
     return $iter($data, $startDepth);
 }
 
-function getTag(array $node)
+function getTag(array $node): string|array
 {
     $tags = [
         'added' => PLUS,
@@ -117,13 +117,13 @@ function getTag(array $node)
     return($tags[pick($node, 'type')]);
 }
 
-function buildIndent(int $depthOfNode, int $lengthOfTag = 0, string $replacer = ' ', int $spaceCount = 4)
+function buildIndent(int $depthOfNode, int $lengthOfTag = 0, string $replacer = ' ', int $spaceCount = 4): string
 {
     $depthOfElement = $depthOfNode + 1;
     return str_repeat($replacer, $spaceCount * $depthOfElement - $lengthOfTag);
 }
 
-function toString(mixed $input, bool $trim = true)
+function toString(mixed $input, bool $trim = true): string
 {
     $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
 

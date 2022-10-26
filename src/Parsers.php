@@ -19,12 +19,12 @@ function parseData(string $data, string $format): array
     }
 }
 
-function parseJson(string $content)
+function parseJson(string $content): array
 {
     return (array) json_decode($content, true);
 }
 
-function parseYaml(string $content)
+function parseYaml(string $content): array
 {
     return (array) Yaml::parse($content);
 }

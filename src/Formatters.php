@@ -6,7 +6,7 @@ use Differ\Formatters\StylishFormatter;
 use Differ\Formatters\PlainFormatter;
 use Differ\Formatters\JsonFormatter;
 
-function render(array $records, string $formatName)
+function render(array $records, string $formatName): string
 {
     switch ($formatName) {
         case 'stylish':

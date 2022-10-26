@@ -6,7 +6,7 @@ use function Differ\Parsers\parseData;
 use function Differ\Recorder\buildDiffTree;
 use function Differ\Formatters\render;
 
-function genDiff(string $path1, string $path2, string $formatName = 'stylish')
+function genDiff(string $path1, string $path2, string $formatName = 'stylish'): string
 {
     $first = parseData(...[getDataFromFile($path1), getFileType($path1)]);
     $second = parseData(...[getDataFromFile($path2), getFileType($path2)]);

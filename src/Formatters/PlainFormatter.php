@@ -6,17 +6,18 @@ use Differ\Differ;
 
 use function Functional\pick;
 
-function render(array $tree)
+function render(array $tree): string
 {
     $lines = collectLines($tree);
     return implode("\n", $lines);
 }
 
-function collectLines(array $node, array $lines = [], array $path = [])
+function collectLines(array $node, array $lines = [], array $ancestry = []): array
 {
     $type = pick($node, 'type');
     $key = pick($node, 'key');
-    $currentPath = implode('.', putKeyToPath($path, $key));
+    $path = buildPathToCurrentNode($ancestry, $key);
+    $pathString = implode('.', $path);
 
     switch ($type) {
         case 'root':
@@ -27,7 +28,7 @@ function collectLines(array $node, array $lines = [], array $path = [])
                 fn($lines, $child) => collectLines(
                     $child,
                     $lines,
-                    putKeyToPath($path, $key),
+                    $path,
                 ),
                 $lines
             );
@@ -37,13 +38,13 @@ function collectLines(array $node, array $lines = [], array $path = [])
             $renderedValue2 = stringify(pick($node, 'value2'));
             return array_merge(
                 $lines,
-                ["Property '{$currentPath}' was updated. From {$renderedValue1} to {$renderedValue2}"]
+                ["Property '{$pathString}' was updated. From {$renderedValue1} to {$renderedValue2}"]
             );
 
         case 'deleted':
             return array_merge(
                 $lines,
-                ["Property '{$currentPath}' was removed"]
+                ["Property '{$pathString}' was removed"]
             );
 
         case 'added':
@@ -51,7 +52,7 @@ function collectLines(array $node, array $lines = [], array $path = [])
             $renderedValue = stringify($value);
             return array_merge(
                 $lines,
-                ["Property '{$currentPath}' was added with value: {$renderedValue}"]
+                ["Property '{$pathString}' was added with value: {$renderedValue}"]
             );
 
         case 'unchanged':
@@ -62,7 +63,7 @@ function collectLines(array $node, array $lines = [], array $path = [])
     }
 }
 
-function putKeyToPath(array $path, string|null $key)
+function buildPathToCurrentNode(array $path, ?string $key): array
 {
     return array_filter(
         array_merge($path, [$key]),
@@ -70,12 +71,12 @@ function putKeyToPath(array $path, string|null $key)
     );
 }
 
-function stringify(mixed $value)
+function stringify(mixed $value): string
 {
     return is_array($value) ? '[complex value]' : toString($value, false);
 }
 
-function toString(mixed $input, bool $trim = true)
+function toString(mixed $input, bool $trim = true): string
 {
     $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
 

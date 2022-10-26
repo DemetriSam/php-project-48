@@ -4,7 +4,7 @@ namespace Differ\Recorder;
 
 use Functional;
 
-function buildDiff(array $first, array $second)
+function buildDiff(array $first, array $second): array
 {
     $keys = array_unique(
         array_merge(
@@ -44,23 +44,20 @@ function buildDiff(array $first, array $second)
             ];
         }
 
-        /** @phpstan-ignore-next-line */
-        if (array_key_exists($key, $first) && array_key_exists($key, $second)) {
-            if ($value1 === $value2) {
-                return [
-                    'key' => $key,
-                    'type' => 'unchanged',
-                    'value' => $value1,
-                ];
-            }
-
+        if ($value1 === $value2) {
             return [
                 'key' => $key,
-                'type' => 'changed',
-                'value1' => $value1,
-                'value2' => $value2,
+                'type' => 'unchanged',
+                'value' => $value1,
             ];
         }
+
+        return [
+            'key' => $key,
+            'type' => 'changed',
+            'value1' => $value1,
+            'value2' => $value2,
+        ];
     }, $sortedKeys);
 }
 

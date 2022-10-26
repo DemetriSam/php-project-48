@@ -2,8 +2,7 @@
 
 namespace Differ\Formatters\JsonFormatter;
 
-function render(array $records)
+function render(array $records): string
 {
-    $result = json_encode($records);
-    return $result;
+    return json_encode($records);
 }
