@@ -11,44 +11,38 @@ use function Differ\Differ\stringify;
 
 class FormatterTest extends TestCase
 {
-    private $expectedPlain;
-
-    public function setUp(): void
+    /**
+     * @dataProvider provideFixtures
+     */
+    public function testStylishFormatter($first, $second, $format, $expected)
     {
-        $this->expectedNested = file_get_contents('tests/fixtures/diff.stylish');
-
-        $this->expectedJson = file_get_contents('tests/fixtures/diff.json');
-
-        $this->expectedFromPlainFormatter = file_get_contents('tests/fixtures/diff.plain');
+        $actual = genDiff($first, $second, $format);
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testMakeStylishStringRecursive()
+    public function provideFixtures()
     {
-        $first = 'tests/fixtures/file1.json';
-        $second = 'tests/fixtures/file2.json';
 
-        $actual = genDiff($first, $second);
+        $json1 = 'tests/fixtures/file1.json';
+        $json2 = 'tests/fixtures/file2.json';
 
-        $this->assertEquals($this->expectedNested, $actual);
-    }
+        $yaml1 = 'tests/fixtures/file1.yaml';
+        $yaml2 = 'tests/fixtures/file2.yaml';
 
-    public function testPlainFormatter()
-    {
-        $first = 'tests/fixtures/file1.json';
-        $second = 'tests/fixtures/file2.json';
+        $expectedStylish = file_get_contents('tests/fixtures/diff.stylish');
+        $expectedJson = file_get_contents('tests/fixtures/diff.json');
+        $expectedPlain = file_get_contents('tests/fixtures/diff.plain');
 
-        $actual = genDiff($first, $second, 'plain');
-
-        $this->assertEquals($this->expectedFromPlainFormatter, $actual);
-    }
-
-    public function testJsonFormatter()
-    {
-        $first = 'tests/fixtures/file1.json';
-        $second = 'tests/fixtures/file2.json';
-
-        $actual = genDiff($first, $second, 'json');
-
-        $this->assertEquals($this->expectedJson, $actual);
+        return [
+            [$json1, $json2, 'stylish', $expectedStylish],
+            [$yaml1, $yaml2, 'stylish', $expectedStylish],
+            [$json1, $yaml2, 'stylish', $expectedStylish],
+            [$json1, $json2, 'plain', $expectedPlain],
+            [$yaml1, $yaml2, 'plain', $expectedPlain],
+            [$json1, $yaml2, 'plain', $expectedPlain],
+            [$json1, $json2, 'json', $expectedJson],
+            [$yaml1, $yaml2, 'json', $expectedJson],
+            [$json1, $yaml2, 'json', $expectedJson],
+        ];
     }
 }
