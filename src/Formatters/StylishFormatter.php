@@ -1,6 +1,6 @@
 <?php
 
-namespace Differ\Differ\StylishFormatter;
+namespace Differ\Formatters\StylishFormatter;
 
 use Differ\Differ;
 
@@ -84,7 +84,7 @@ function stringify(mixed $data, int $startDepth = 0)
 
     $iter = function ($data, $depth) use (&$iter) {
         if (!is_array($data)) {
-            return Differ\toString($data);
+            return toString($data);
         }
 
         $itemIndent = buildIndent($depth);
@@ -121,4 +121,11 @@ function buildIndent(int $depthOfNode, int $lengthOfTag = 0, string $replacer = 
 {
     $depthOfElement = $depthOfNode + 1;
     return str_repeat($replacer, $spaceCount * $depthOfElement - $lengthOfTag);
+}
+
+function toString(mixed $input, bool $trim = true)
+{
+    $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
+
+    return $trim ? trim($exported, "'") : $exported;
 }

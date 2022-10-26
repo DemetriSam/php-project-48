@@ -1,6 +1,6 @@
 <?php
 
-namespace Differ\Differ\PlainFormatter;
+namespace Differ\Formatters\PlainFormatter;
 
 use Differ\Differ;
 
@@ -72,5 +72,12 @@ function putKeyToPath(array $path, string|null $key)
 
 function stringify(mixed $value)
 {
-    return is_array($value) ? '[complex value]' : Differ\toString($value, false);
+    return is_array($value) ? '[complex value]' : toString($value, false);
+}
+
+function toString(mixed $input, bool $trim = true)
+{
+    $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
+
+    return $trim ? trim($exported, "'") : $exported;
 }

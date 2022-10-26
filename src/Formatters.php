@@ -1,10 +1,10 @@
 <?php
 
-namespace Differ\Differ;
+namespace Differ\Formatters;
 
-use Differ\Differ\StylishFormatter;
-use Differ\Differ\PlainFormatter;
-use Differ\Differ\JsonFormatter;
+use Differ\Formatters\StylishFormatter;
+use Differ\Formatters\PlainFormatter;
+use Differ\Formatters\JsonFormatter;
 
 function render(array $records, string $formatName)
 {
@@ -21,11 +21,4 @@ function render(array $records, string $formatName)
         default:
             throw new \Exception("The '$formatName' format is unknown");
     }
-}
-
-function toString(mixed $input, bool $trim = true)
-{
-    $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
-
-    return $trim ? trim($exported, "'") : $exported;
 }

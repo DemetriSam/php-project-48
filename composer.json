@@ -4,11 +4,8 @@
     "type": "project",
     "license": "MIT",
     "autoload": {
-        "psr-4": {
-            "Hexlet\\Code\\": "src/"
-        },
         "files": [
-            "src/Functions.php",
+            "src/Differ.php",
             "src/Parsers.php",
             "src/Formatters.php",
             "src/Recorder.php",

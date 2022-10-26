@@ -1,6 +1,6 @@
 <?php
 
-namespace Differ\Differ\JsonFormatter;
+namespace Differ\Formatters\JsonFormatter;
 
 function render(array $records)
 {

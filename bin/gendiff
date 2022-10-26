@@ -3,7 +3,7 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use function Differ\Differ\printDiff;
+use function Differ\Differ\genDiff;
 
 function getMan() {
     return <<<DOC
@@ -29,4 +29,5 @@ $format = $args['--format'];
 $first = $args['<firstFile>'];
 $second = $args['<secondFile>'];
 
-printDiff($first, $second, $format);
+$result = genDiff($first, $second, $format);
+print_r($result);
