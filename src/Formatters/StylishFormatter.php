@@ -51,7 +51,7 @@ function render(array $node): string
             case 'changed':
                 $key = pick($node, 'key');
 
-                [$tag1, $tag2] = $tag;
+                [$tag1, $tag2] = explode('.', $tag);
 
                 $renderedValue1 = stringify(pick($node, 'value1'), $depth + 1);
                 $renderedValue2 = stringify(pick($node, 'value2'), $depth + 1);
@@ -103,14 +103,14 @@ function stringify(mixed $data, int $startDepth = 0): string
     return $iter($data, $startDepth);
 }
 
-function getTag(array $node): string|array
+function getTag(array $node): string
 {
     $tags = [
         'added' => PLUS,
         'deleted' => MINUS,
         'unchanged' => EMPTY_TAG,
         'nested' => EMPTY_TAG,
-        'changed' => [MINUS, PLUS],
+        'changed' => MINUS . '.' . PLUS,
         'root' => 'no tag',
     ];
 
