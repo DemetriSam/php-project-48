@@ -71,7 +71,7 @@ function buildPathToCurrentNode(array $path, ?string $key): array
 
 function stringify(mixed $value): string
 {
-    return is_array($value) ? '[complex value]' : toString($value, false);
+    return is_array($value) ? '[complex value]' : toString($value);
 }
 
 function toString(mixed $input): string
