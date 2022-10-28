@@ -2,14 +2,13 @@
 
 namespace Differ\Formatters\StylishFormatter;
 
-use Differ\Differ;
-
 use function Functional\pick;
 
 const PLUS = '+ ';
 const MINUS = '- ';
 const EMPTY_TAG = '  ';
 const LENGTH_OF_TAGS = 2;
+const INDENT_LENGTH = 4;
 
 function render(array $node): string
 {
@@ -117,15 +116,14 @@ function getTag(array $node): string
     return($tags[pick($node, 'type')]);
 }
 
-function buildIndent(int $depthOfNode, int $lengthOfTag = 0, string $replacer = ' ', int $spaceCount = 4): string
+function buildIndent(int $depthOfNode, int $lengthOfTag = 0): string
 {
     $depthOfElement = $depthOfNode + 1;
-    return str_repeat($replacer, $spaceCount * $depthOfElement - $lengthOfTag);
+    return str_repeat(' ', INDENT_LENGTH * $depthOfElement - $lengthOfTag);
 }
 
-function toString(mixed $input, bool $trim = true): string
+function toString(mixed $input): string
 {
     $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
-
-    return $trim ? trim($exported, "'") : $exported;
+    return trim($exported, "'");
 }

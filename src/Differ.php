@@ -8,8 +8,8 @@ use function Differ\Formatters\render;
 
 function genDiff(string $path1, string $path2, string $formatName = 'stylish'): string
 {
-    $first = parseData(...[getDataFromFile($path1), getFileType($path1)]);
-    $second = parseData(...[getDataFromFile($path2), getFileType($path2)]);
+    $first = parseData(getDataFromFile($path1), getFileType($path1));
+    $second = parseData(getDataFromFile($path2), getFileType($path2));
 
     $diffTree = buildDiffTree($first, $second);
     $diff = render($diffTree, $formatName);

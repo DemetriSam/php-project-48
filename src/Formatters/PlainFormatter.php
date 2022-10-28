@@ -2,8 +2,6 @@
 
 namespace Differ\Formatters\PlainFormatter;
 
-use Differ\Differ;
-
 use function Functional\pick;
 
 function render(array $tree): string
@@ -76,9 +74,7 @@ function stringify(mixed $value): string
     return is_array($value) ? '[complex value]' : toString($value, false);
 }
 
-function toString(mixed $input, bool $trim = true): string
+function toString(mixed $input): string
 {
-    $exported = var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
-
-    return $trim ? trim($exported, "'") : $exported;
+    return var_export($input, true) === 'NULL' ? 'null' : var_export($input, true);
 }
